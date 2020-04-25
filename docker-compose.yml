@@ -2,7 +2,6 @@ version: "3"
 services:
   database:
     image: mongo
-    container_name: "mongo-db"
+    container_name: mongo-db
     ports:
       - 27017:27017
-#    command: --smallfiles
