@@ -4,7 +4,7 @@ import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 
 @Document
-class Room(
+data class Room(
     @Id
     val id: String,
     val number: String,

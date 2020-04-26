@@ -6,12 +6,12 @@ import org.springframework.data.mongodb.core.mapping.Document
 import java.time.Instant
 
 @Document
-class Booking(
+data class Booking(
     @Id
     val id: String,
     val roomId: String,
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "UTC")
     val start: Instant,
-    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss", timezone = "UTC")
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "UTC")
     val end: Instant
 )
