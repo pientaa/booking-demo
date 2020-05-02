@@ -1,5 +1,7 @@
-package com.example.bookingdemo.room
+package com.example.bookingdemo.service
 
+import com.example.bookingdemo.model.Room
+import com.example.bookingdemo.repository.RoomRepository
 import org.springframework.stereotype.Service
 
 @Service

@@ -1,5 +1,7 @@
-package com.example.bookingdemo.room
+package com.example.bookingdemo.controller
 
+import com.example.bookingdemo.model.Room
+import com.example.bookingdemo.service.RoomService
 import org.springframework.web.bind.annotation.*
 
 @RestController()

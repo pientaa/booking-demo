@@ -1,5 +1,7 @@
-package com.example.bookingdemo.booking
+package com.example.bookingdemo.controller
 
+import com.example.bookingdemo.model.Booking
+import com.example.bookingdemo.service.BookingService
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
@@ -18,17 +20,17 @@ class BookingController(
     }
 
     @GetMapping("/{bookingId}")
-    fun getBooking(@PathVariable(name = "bookingId") bookingId: String): Booking = bookingService.getById(bookingId)
+    fun getBooking(@PathVariable bookingId: String): Booking = bookingService.getById(bookingId)
 
     @GetMapping
     fun getAllByRoomIdAndBetween(
-        @RequestParam(name = "roomId", required = false) roomId: String?,
+        @RequestParam roomId: String?,
 
-        @RequestParam(name = "fromDate", required = false)
+        @RequestParam
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
         fromDate: LocalDateTime?,
 
-        @RequestParam(name = "toDate", required = false)
+        @RequestParam
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
         toDate: LocalDateTime?
     ): List<Booking> =
@@ -40,5 +42,5 @@ class BookingController(
 
     @DeleteMapping("/{bookingId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun delete(@PathVariable(name = "bookingId") bookingId: String) = bookingService.deleteById(bookingId)
+    fun delete(@PathVariable bookingId: String) = bookingService.deleteById(bookingId)
 }

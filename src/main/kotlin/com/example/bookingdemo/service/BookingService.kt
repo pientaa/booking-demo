@@ -1,5 +1,7 @@
-package com.example.bookingdemo.booking
+package com.example.bookingdemo.service
 
+import com.example.bookingdemo.model.Booking
+import com.example.bookingdemo.repository.BookingRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
