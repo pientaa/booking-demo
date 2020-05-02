@@ -10,21 +10,25 @@ class DataMigrations {
     @ChangeSet(order = "001", author = "lukasz.pieta", id = "rooms created")
     fun createRooms(mongoTemplate: MongoTemplate) {
         val room1A = Room(
+            id = null,
             number = "1A",
             hasProjector = false,
             hasWhiteboard = true
         )
         val room1B = Room(
+            id = null,
             number = "1B",
             hasProjector = true,
             hasWhiteboard = false
         )
         val room2A = Room(
+            id = null,
             number = "2A",
             hasProjector = false,
             hasWhiteboard = false
         )
         val room2B = Room(
+            id = null,
             number = "2B",
             hasProjector = true,
             hasWhiteboard = true

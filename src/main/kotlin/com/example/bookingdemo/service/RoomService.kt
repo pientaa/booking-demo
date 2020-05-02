@@ -13,5 +13,5 @@ class RoomService(
 ) {
     fun save(room: Room): Room = roomRepository.save(room)
     fun getAll(): List<Room> = roomRepository.findAll()
-    fun getById(id: UUID): Room = roomRepository.findByIdOrNull(id) ?: throw RoomNotFoundException(id)
+    fun getById(id: String): Room = roomRepository.findByIdOrNull(id) ?: throw RoomNotFoundException(id)
 }

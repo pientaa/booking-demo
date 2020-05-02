@@ -11,15 +11,13 @@ open class ServiceException(
 ) : ResponseStatusException(httpStatus, message)
 
 class RoomNotFoundException(
-    private val roomId: UUID
-) : ServiceException(HttpStatus.NOT_FOUND, "Room with $roomId not found")
+    roomId: String
+) : ServiceException(HttpStatus.NOT_FOUND, "Room with id: $roomId not found")
 
 class BookingNotFoundException(
-    private val bookingId: UUID
-) : ServiceException(HttpStatus.NOT_FOUND, "Booking with $bookingId not found")
+    bookingId: String
+) : ServiceException(HttpStatus.NOT_FOUND, "Booking with id: $bookingId not found")
 
 class RoomConflictException(
-    private val roomId: UUID,
-    private val start: Instant,
-    private val end: Instant
+    roomId: String, start: Instant, end: Instant
 ) : ServiceException(HttpStatus.CONFLICT, "Room with id: $roomId is already booked in period: $start - $end")
