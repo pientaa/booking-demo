@@ -1,7 +1,9 @@
 package com.example.bookingdemo.repository
 
+import com.example.bookingdemo.infastructure.BookingNotFoundException
 import com.example.bookingdemo.model.Booking
 import org.springframework.data.mongodb.repository.MongoRepository
+import org.springframework.data.repository.findByIdOrNull
 import java.time.Instant
 
 interface BookingRepository : MongoRepository<Booking, String> {
@@ -17,4 +19,8 @@ interface BookingRepository : MongoRepository<Booking, String> {
     fun findAllByRoomIdAndStartLessThanEqualAndEndGreaterThan(
         roomId: String, fromDate: Instant, toDate: Instant
     ): List<Booking>
+
+    @JvmDefault
+    fun findByIdOrThrow(id: String): Booking =
+        findByIdOrNull(id) ?: throw BookingNotFoundException(id)
 }

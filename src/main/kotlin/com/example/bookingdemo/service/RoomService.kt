@@ -1,17 +1,27 @@
 package com.example.bookingdemo.service
 
-import com.example.bookingdemo.infastructure.RoomNotFoundException
 import com.example.bookingdemo.model.Room
+import com.example.bookingdemo.repository.BookingRepository
 import com.example.bookingdemo.repository.RoomRepository
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
-import java.util.*
+import java.time.Instant
 
 @Service
 class RoomService(
-    val roomRepository: RoomRepository
+    private val roomRepository: RoomRepository,
+    private val bookingRepository: BookingRepository
 ) {
     fun save(room: Room): Room = roomRepository.save(room)
+
     fun getAll(): List<Room> = roomRepository.findAll()
-    fun getById(id: String): Room = roomRepository.findByIdOrNull(id) ?: throw RoomNotFoundException(id)
+
+    fun getAllAvailableRoomsBetween(start: Instant, end: Instant): List<Room> {
+        val roomsAlreadyBooked =
+            (bookingRepository.findAllByStartBetween(start, end) +
+                    bookingRepository.findAllByStartLessThanEqualAndEndGreaterThan(start, start))
+                .distinctBy { it.id }
+                .map { it.roomId }
+
+        return getAll().filter { it.id !in roomsAlreadyBooked }
+    }
 }

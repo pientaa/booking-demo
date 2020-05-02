@@ -1,26 +1,24 @@
 package com.example.bookingdemo.service
 
-import com.example.bookingdemo.infastructure.BookingNotFoundException
 import com.example.bookingdemo.infastructure.RoomConflictException
 import com.example.bookingdemo.model.Booking
 import com.example.bookingdemo.repository.BookingRepository
-import org.springframework.data.repository.findByIdOrNull
+import com.example.bookingdemo.repository.RoomRepository
 import org.springframework.stereotype.Service
 import java.time.Instant
 
 @Service
 class BookingService(
-    val bookingRepository: BookingRepository,
-    val roomService: RoomService
+    private val bookingRepository: BookingRepository,
+    private val roomRepository: RoomRepository
 ) {
-    fun save(booking: Booking): Booking = roomService.getById(booking.roomId).run {
+    fun save(booking: Booking): Booking = roomRepository.findByIdOrThrow(booking.roomId).run {
         if (getAllByRoomIdAndBetween(booking.roomId, booking.start, booking.end).isEmpty())
             bookingRepository.save(booking)
         else throw RoomConflictException(booking.roomId, booking.start, booking.end)
     }
 
-    fun getById(bookingId: String): Booking =
-        bookingRepository.findByIdOrNull(bookingId) ?: throw BookingNotFoundException(bookingId)
+    fun getById(bookingId: String): Booking = bookingRepository.findByIdOrThrow(bookingId)
 
     fun getAllByRoomIdAndBetween(roomId: String?, fromDate: Instant?, toDate: Instant?): List<Booking> =
         when {
