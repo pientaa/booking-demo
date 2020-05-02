@@ -33,6 +33,5 @@ class DataMigrations {
         mongoTemplate.insert(room1B)
         mongoTemplate.insert(room2A)
         mongoTemplate.insert(room2B)
-        println("Applied changeset 001 - rooms created")
     }
 }

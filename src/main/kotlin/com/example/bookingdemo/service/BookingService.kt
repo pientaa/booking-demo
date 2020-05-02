@@ -1,33 +1,31 @@
 package com.example.bookingdemo.service
 
+import com.example.bookingdemo.infastructure.BookingNotFoundException
+import com.example.bookingdemo.infastructure.RoomConflictException
 import com.example.bookingdemo.model.Booking
 import com.example.bookingdemo.repository.BookingRepository
 import org.springframework.data.repository.findByIdOrNull
-import org.springframework.http.HttpStatus
 import org.springframework.stereotype.Service
-import org.springframework.web.server.ResponseStatusException
 import java.time.Instant
+import java.util.*
 
 @Service
 class BookingService(
-    val bookingRepository: BookingRepository
+    val bookingRepository: BookingRepository,
+    val roomService: RoomService
 ) {
-    fun add(booking: Booking): Booking =
+    fun add(booking: Booking): Booking? = roomService.getById(booking.roomId).run {
         if (getAllByRoomIdAndBetween(booking.roomId, booking.start, booking.end).isEmpty())
             bookingRepository.save(booking)
-        else throw  ResponseStatusException(
-            HttpStatus.CONFLICT,
-            "Room with id: ${booking.roomId} is already booked in period: ${booking.start} - ${booking.end}"
-        )
-
-    fun deleteById(bookingId: String) = bookingRepository.deleteById(bookingId)
+        else throw RoomConflictException(booking.roomId, booking.start, booking.end)
+    }
 
     fun getAll(): List<Booking> = bookingRepository.findAll()
 
-    fun getById(bookingId: String): Booking = bookingRepository.findByIdOrNull(bookingId)
-            ?: throw ResponseStatusException(HttpStatus.NOT_FOUND, "Booking with id: $bookingId not found")
+    fun getById(bookingId: UUID): Booking =
+        bookingRepository.findByIdOrNull(bookingId) ?: throw BookingNotFoundException(bookingId)
 
-    fun getAllByRoomIdAndBetween(roomId: String?, fromDate: Instant?, toDate: Instant?): List<Booking> =
+    fun getAllByRoomIdAndBetween(roomId: UUID?, fromDate: Instant?, toDate: Instant?): List<Booking> =
         when {
             roomId == null -> getAllBetween(fromDate, toDate)
             fromDate == null && toDate == null -> bookingRepository.findAllByRoomId(roomId)
@@ -49,4 +47,6 @@ class BookingService(
                         it.findAllByStartLessThanEqualAndEndGreaterThan(fromDate, fromDate)
             }.distinctBy { it.id }
         }
+
+    fun deleteById(bookingId: UUID) = bookingRepository.deleteById(bookingId)
 }

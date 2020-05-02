@@ -14,4 +14,6 @@ class RoomController(
 
     @GetMapping
     fun getAll(): List<Room> = roomService.getAll()
+
+    //TODO Get available rooms
 }

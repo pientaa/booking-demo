@@ -10,7 +10,7 @@ import java.util.*
 data class Booking(
     @Id
     val id: UUID = UUID.randomUUID(),
-    val roomId: String,
+    val roomId: UUID,
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "UTC")
     val start: Instant,
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "UTC")

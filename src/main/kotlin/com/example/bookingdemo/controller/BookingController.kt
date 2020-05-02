@@ -5,8 +5,11 @@ import com.example.bookingdemo.service.BookingService
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
+import org.springframework.web.server.ResponseStatusException
+import java.awt.print.Book
 import java.time.LocalDateTime
 import java.time.ZoneOffset
+import java.util.*
 
 @RestController
 @RequestMapping("/bookings")
@@ -16,15 +19,23 @@ class BookingController(
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     fun add(@RequestBody booking: Booking): Booking {
-        return bookingService.add(booking)
+        return bookingService.add(booking) ?: throw  ResponseStatusException(
+            HttpStatus.CONFLICT,
+            "Room with id: ${booking.roomId} is already booked in period: ${booking.start} - ${booking.end}"
+        )
     }
 
     @GetMapping("/{bookingId}")
-    fun getBooking(@PathVariable bookingId: String): Booking = bookingService.getById(bookingId)
+    fun getBooking(@PathVariable bookingId: UUID): Booking = bookingService.getById(bookingId)
+
+    //TODO
+//    @PutMapping("/{bookingId}")
+//    fun updateBooking(@PathVariable bookingId: UUID, @RequestBody booking: Booking): Booking =
+//        bookingService.updateBooking(booking.copy(id = bookingId))
 
     @GetMapping
     fun getAllByRoomIdAndBetween(
-        @RequestParam roomId: String?,
+        @RequestParam roomId: UUID?,
 
         @RequestParam
         @DateTimeFormat(iso = DateTimeFormat.ISO.DATE_TIME)
@@ -42,5 +53,5 @@ class BookingController(
 
     @DeleteMapping("/{bookingId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun delete(@PathVariable bookingId: String) = bookingService.deleteById(bookingId)
+    fun delete(@PathVariable bookingId: UUID) = bookingService.deleteById(bookingId)
 }
