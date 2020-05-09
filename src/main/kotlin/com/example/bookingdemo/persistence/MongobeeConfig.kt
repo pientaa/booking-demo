@@ -1,4 +1,4 @@
-package com.example.bookingdemo
+package com.example.bookingdemo.persistence
 
 import com.github.mongobee.Mongobee
 import org.springframework.beans.factory.annotation.Autowired

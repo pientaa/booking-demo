@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
-@RestController()
+@RestController
 @RequestMapping("/rooms")
 class RoomController(
     private val roomService: RoomService
