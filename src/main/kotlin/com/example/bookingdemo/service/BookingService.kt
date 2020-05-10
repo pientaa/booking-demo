@@ -16,7 +16,7 @@ class BookingService(
     private val roomRepository: RoomRepository
 ) {
     fun save(booking: Booking): Booking = roomRepository.findByIdOrNull(booking.roomId)?.run {
-        if (getAllByRoomIdAndBetween(booking.roomId, booking.start, booking.end).isEmpty())
+        if (getAllByRoomIdAndBetween(booking.roomId, booking.start, booking.end).none { it.id != booking.id })
             bookingRepository.save(booking)
         else throw RoomConflictException(booking.roomId, booking.start, booking.end)
     } ?: throw RoomNotFoundException(booking.roomId)
