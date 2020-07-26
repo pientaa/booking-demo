@@ -4,23 +4,15 @@ import com.example.bookingdemo.infastructure.RoomConflictException
 import com.example.bookingdemo.model.Booking
 import io.kotest.core.spec.style.AnnotationSpec
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.TestInstance
 import org.junit.jupiter.api.assertThrows
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
 @SpringBootTest
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class BookingServiceAnnotationSpec : AnnotationSpec() {
-    @Autowired
-    lateinit var roomService: RoomService
+class BookingServiceAnnotationSpec(private val bookingService: BookingService) : AnnotationSpec() {
 
-    @Autowired
-    lateinit var bookingService: BookingService
-
-    @AfterAll
+    @BeforeAll
     fun cleanUp() {
         bookingService.getAllBetween(null, null)
             .forEach { bookingService.deleteById(it.id!!) }

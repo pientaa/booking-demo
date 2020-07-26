@@ -40,6 +40,8 @@ dependencies {
     testImplementation("io.kotest:kotest-property-jvm:4.1.2")
     testImplementation("io.kotest:kotest-extensions-spring:4.1.2")
     testImplementation("io.kotlintest:kotlintest-extensions-spring:3.4.2")
+//    testImplementation("io.kotest:kotest-extensions-testcontainers:4.1.2")
+//    testImplementation("org.testcontainers:mongodb:1.14.3")
 }
 
 tasks.withType<Test> {

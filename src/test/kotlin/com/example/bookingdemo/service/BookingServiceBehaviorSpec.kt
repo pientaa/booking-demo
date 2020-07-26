@@ -2,34 +2,22 @@ package com.example.bookingdemo.service
 
 import arrow.core.EitherOf
 import arrow.core.Try
+import com.example.bookingdemo.infrastructure.AbstractBookingServiceTest
 import com.example.bookingdemo.infastructure.RoomConflictException
 import com.example.bookingdemo.model.Booking
-import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
 import io.kotlintest.matchers.types.shouldBeInstanceOf
-import org.junit.jupiter.api.TestInstance
-import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
 @SpringBootTest
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class BookingServiceBehaviorSpec : BehaviorSpec() {
-
-    @Autowired
-    lateinit var bookingService: BookingService
-
-    @Autowired
-    lateinit var roomService: RoomService
-
+class BookingServiceBehaviorSpec(
+    private val bookingService: BookingService
+) : AbstractBookingServiceTest(bookingService) {
     init {
-        afterSpec {
-            bookingService.getAllBetween(null, null)
-                .forEach { bookingService.deleteById(it.id!!) }
-        }
-
-        Given("new booking") {
+        Given("new booking")
+        {
             val booking = Booking(
                 id = null,
                 roomId = "5eada3967f3a1726878aead2",
