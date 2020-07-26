@@ -6,7 +6,6 @@ import com.example.bookingdemo.infastructure.RoomConflictException
 import com.example.bookingdemo.model.Booking
 import io.kotest.core.spec.style.BehaviorSpec
 import io.kotest.matchers.shouldBe
-import io.kotest.spring.SpringListener
 import io.kotlintest.matchers.types.shouldBeInstanceOf
 import org.junit.jupiter.api.TestInstance
 import org.springframework.beans.factory.annotation.Autowired
@@ -23,8 +22,6 @@ class BookingServiceBehaviorSpec : BehaviorSpec() {
 
     @Autowired
     lateinit var roomService: RoomService
-
-    override fun listeners() = listOf(SpringListener)
 
     init {
         afterSpec {

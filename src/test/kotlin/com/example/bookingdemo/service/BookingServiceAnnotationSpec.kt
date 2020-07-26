@@ -2,21 +2,18 @@ package com.example.bookingdemo.service
 
 import com.example.bookingdemo.infastructure.RoomConflictException
 import com.example.bookingdemo.model.Booking
-import org.junit.jupiter.api.*
+import io.kotest.core.spec.style.AnnotationSpec
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.mockito.Spy
+import org.junit.jupiter.api.TestInstance
+import org.junit.jupiter.api.assertThrows
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.context.SpringBootTest
-import org.springframework.test.annotation.Rollback
-import org.springframework.test.context.event.annotation.AfterTestClass
-import org.springframework.test.context.event.annotation.BeforeTestClass
-import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
 @SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class BookingServiceTest {
+class BookingServiceAnnotationSpec : AnnotationSpec() {
     @Autowired
     lateinit var roomService: RoomService
 
@@ -43,9 +40,7 @@ class BookingServiceTest {
         val createdBooking = bookingService.save(booking)
 
         // then
-        assertEquals(booking.roomId, createdBooking.roomId)
-        assertEquals(booking.start, createdBooking.start)
-        assertEquals(booking.end, createdBooking.end)
+        assertEquals(booking.copy(id = createdBooking.id), createdBooking)
     }
 
     @Test
