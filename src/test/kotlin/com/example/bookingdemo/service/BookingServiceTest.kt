@@ -2,46 +2,31 @@ package com.example.bookingdemo.service
 
 import com.example.bookingdemo.infastructure.RoomConflictException
 import com.example.bookingdemo.model.Booking
-import com.example.bookingdemo.persistence.DataMigrations
-import com.example.bookingdemo.repository.BookingRepository
-import com.example.bookingdemo.repository.RoomRepository
+import org.junit.jupiter.api.*
 import org.junit.jupiter.api.Assertions.assertEquals
-import org.junit.jupiter.api.BeforeAll
-import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestInstance
-import org.junit.jupiter.api.assertThrows
-import org.junit.jupiter.api.extension.ExtendWith
+import org.mockito.Spy
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.data.mongo.DataMongoTest
-import org.springframework.data.mongodb.core.MongoTemplate
-import org.springframework.test.context.junit.jupiter.SpringExtension
+import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.test.annotation.Rollback
+import org.springframework.test.context.event.annotation.AfterTestClass
+import org.springframework.test.context.event.annotation.BeforeTestClass
+import org.springframework.transaction.annotation.Transactional
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
-@DataMongoTest
-@ExtendWith(SpringExtension::class)
+@SpringBootTest
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class BookingServiceTest {
-
     @Autowired
-    lateinit var roomRepository: RoomRepository
-
-    @Autowired
-    lateinit var bookingRepository: BookingRepository
-
-    @Autowired
-    lateinit var mongoTemplate: MongoTemplate
-
     lateinit var roomService: RoomService
+
+    @Autowired
     lateinit var bookingService: BookingService
 
-
-    @BeforeAll
-    fun setup() {
-        roomService = RoomService(roomRepository, bookingRepository)
-        bookingService = BookingService(bookingRepository, roomRepository)
-        DataMigrations().createRooms(mongoTemplate)
-        DataMigrations().createBookings(mongoTemplate)
+    @AfterAll
+    fun cleanUp() {
+        bookingService.getAllBetween(null, null)
+            .forEach { bookingService.deleteById(it.id!!) }
     }
 
     @Test
@@ -72,8 +57,9 @@ class BookingServiceTest {
             start = LocalDateTime.of(2020, 5, 13, 10, 0).toInstant(ZoneOffset.UTC),
             end = LocalDateTime.of(2020, 5, 13, 12, 0).toInstant(ZoneOffset.UTC)
         )
+        bookingService.save(booking)
 
         // then
-        assertThrows<RoomConflictException> { bookingService.save(booking)  }
+        assertThrows<RoomConflictException> { bookingService.save(booking) }
     }
 }

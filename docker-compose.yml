@@ -1,7 +1,10 @@
 version: "3"
 services:
   database:
-    image: mongo
+    image: mongo:4.0
     container_name: mongo-db
     ports:
       - 27017:27017
+#    command: >
+#      sh -c "mongod --replSet rs0 &&
+#             mongo --eval "rs.initiate()""

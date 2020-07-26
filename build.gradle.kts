@@ -34,7 +34,12 @@ dependencies {
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude(group = "org.junit.vintage", module = "junit-vintage-engine")
     }
-    testImplementation("cz.jirutka.spring:embedmongo-spring:1.1")
+//    testImplementation("cz.jirutka.spring:embedmongo-spring:1.1")
+    testImplementation("io.kotest:kotest-runner-junit5-jvm:4.1.2")
+    testImplementation("io.kotest:kotest-assertions-core-jvm:4.1.2")
+    testImplementation("io.kotest:kotest-property-jvm:4.1.2")
+    testImplementation("io.kotest:kotest-extensions-spring:4.1.2")
+    testImplementation("io.kotlintest:kotlintest-extensions-spring:3.4.2")
 }
 
 tasks.withType<Test> {
