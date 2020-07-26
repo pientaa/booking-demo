@@ -2,7 +2,7 @@ package com.example.bookingdemo.service
 
 import arrow.core.EitherOf
 import arrow.core.Try
-import com.example.bookingdemo.infrastructure.AbstractBookingServiceTest
+import com.example.bookingdemo.infrastructure.AbstractBookingTest
 import com.example.bookingdemo.infastructure.RoomConflictException
 import com.example.bookingdemo.model.Booking
 import io.kotest.matchers.shouldBe
@@ -12,9 +12,9 @@ import java.time.LocalDateTime
 import java.time.ZoneOffset
 
 @SpringBootTest
-class BookingServiceBehaviorSpec(
+class BookingBehaviorSpec(
     private val bookingService: BookingService
-) : AbstractBookingServiceTest(bookingService) {
+) : AbstractBookingTest(bookingService) {
     init {
         Given("new booking")
         {

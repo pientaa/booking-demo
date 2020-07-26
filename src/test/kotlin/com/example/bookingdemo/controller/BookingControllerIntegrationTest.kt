@@ -1,6 +1,6 @@
 package com.example.bookingdemo.controller
 
-import com.example.bookingdemo.infrastructure.AbstractBookingServiceTest
+import com.example.bookingdemo.infrastructure.AbstractBookingTest
 import com.example.bookingdemo.infrastructure.Mapper
 import com.example.bookingdemo.model.Booking
 import com.example.bookingdemo.service.BookingService
@@ -19,7 +19,7 @@ import java.time.LocalDateTime
 class BookingControllerIntegrationTest(
     applicationContext: WebApplicationContext,
     bookingService: BookingService
-) : AbstractBookingServiceTest(bookingService) {
+) : AbstractBookingTest(bookingService) {
 
     lateinit var mvc: MockMvc
 
