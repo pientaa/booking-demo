@@ -2,8 +2,8 @@ package com.example.bookingdemo.service
 
 import arrow.core.EitherOf
 import arrow.core.Try
-import com.example.bookingdemo.infrastructure.AbstractBookingTest
 import com.example.bookingdemo.infastructure.RoomConflictException
+import com.example.bookingdemo.infrastructure.AbstractBookingTest
 import com.example.bookingdemo.model.Booking
 import io.kotest.matchers.shouldBe
 import io.kotlintest.matchers.types.shouldBeInstanceOf
@@ -16,8 +16,7 @@ class BookingBehaviorSpec(
     private val bookingService: BookingService
 ) : AbstractBookingTest(bookingService) {
     init {
-        Given("new booking")
-        {
+        Given("new booking") {
             val booking = Booking(
                 id = null,
                 roomId = "5eada3967f3a1726878aead2",
