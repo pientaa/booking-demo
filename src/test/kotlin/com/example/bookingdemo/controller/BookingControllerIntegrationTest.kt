@@ -16,7 +16,7 @@ import org.springframework.web.context.WebApplicationContext
 import java.time.LocalDateTime
 
 @SpringBootTest
-class BookingControllerIntegrationTest(
+final class BookingControllerIntegrationTest(
     applicationContext: WebApplicationContext,
     bookingService: BookingService
 ) : AbstractBookingTest(bookingService) {
