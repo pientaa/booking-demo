@@ -40,7 +40,7 @@ class BookingServiceAnnotationSpec(private val bookingService: BookingService) :
         // given
         val booking = Booking(
             id = null,
-            roomId = "5eada3967f3a1726878aead2",
+            roomId = "5eada3967f3a1726878aead1",
             start = LocalDateTime.of(2020, 5, 13, 10, 0).toInstant(ZoneOffset.UTC),
             end = LocalDateTime.of(2020, 5, 13, 12, 0).toInstant(ZoneOffset.UTC)
         )

@@ -1,18 +1,15 @@
 package com.example.bookingdemo.service
 
-import arrow.core.EitherOf
-import arrow.core.Try
 import com.example.bookingdemo.infastructure.RoomConflictException
 import com.example.bookingdemo.infrastructure.AbstractBookingTest
 import com.example.bookingdemo.model.Booking
 import io.kotest.matchers.shouldBe
-import io.kotlintest.matchers.types.shouldBeInstanceOf
 import org.springframework.boot.test.context.SpringBootTest
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
 @SpringBootTest
-class BookingBehaviorSpec(
+final class BookingServiceTest(
     private val bookingService: BookingService
 ) : AbstractBookingTest(bookingService) {
     init {
@@ -32,11 +29,14 @@ class BookingBehaviorSpec(
                 }
             }
             And("try to save it again") {
-                val saveAttempt = Try { bookingService.save(booking) }
+                val result = try {
+                    bookingService.save(booking)
+                } catch (e: Exception) {
+                    e
+                }
 
                 Then("Exception should be thrown") {
-                    saveAttempt.isFailure() shouldBe true
-                    saveAttempt.shouldBeInstanceOf<EitherOf<RoomConflictException, Booking>>()
+                    result::class shouldBe RoomConflictException::class
                 }
             }
         }
