@@ -14,7 +14,7 @@ class BookingServiceAnnotationSpec(private val bookingService: BookingService) :
 
     @BeforeAll
     fun cleanUp() {
-        bookingService.getAllBetween(null, null)
+        bookingService.getAllBetween(fromDate = null, toDate = null)
             .forEach { bookingService.deleteById(it.id!!) }
     }
 
