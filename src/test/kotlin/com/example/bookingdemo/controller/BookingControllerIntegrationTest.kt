@@ -8,6 +8,7 @@ import com.example.bookingdemo.stubs.BookingStub
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.kotlintest.shouldBe
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.http.MediaType
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers
@@ -30,12 +31,12 @@ final class BookingControllerIntegrationTest(
                 .build()
         }
 
-        Given("parameters as time period from 8 a.m. to 1 p.m.") {
+        Given("parameters as time period from 8 a.m. to 2 p.m.") {
             val url = "http://localhost/bookings"
             val fromDateTime = LocalDateTime.of(2020, 8, 29, 8, 0)
-            val toDateTime = LocalDateTime.of(2020, 8, 29, 13, 0)
+            val toDateTime = LocalDateTime.of(2020, 8, 29, 14, 0)
 
-            When("get all bookings") {
+            When("get bookings between") {
                 val result = mvc.perform(
                     MockMvcRequestBuilders.get(url)
                         .param("fromDate", fromDateTime.toString())
@@ -44,12 +45,52 @@ final class BookingControllerIntegrationTest(
                     .andExpect(MockMvcResultMatchers.status().isOk)
                     .andReturn()
 
+                val actual: List<Booking> = Mapper.readValue(result.response.contentAsString)
+
                 Then("should return one booking at 12 a.m.") {
-
-                    val actual: List<Booking> = Mapper.readValue(result.response.contentAsString)
-
                     actual.size shouldBe 1
-                    actual[0] shouldBe BookingStub.wednesdayNoonBooking.copy(id = actual[0].id)
+                    actual.first() shouldBe BookingStub.wednesdayNoonBooking.copy(id = actual.first().id)
+                }
+            }
+            And("two non conflicting bookings") {
+                val bookings = BookingStub.nonConflictingBookings
+
+                When("add them") {
+                    val createdBookings: List<Booking> =
+                        bookings.map {
+                            mvc.perform(
+                                MockMvcRequestBuilders.post(url)
+                                    .contentType(MediaType.APPLICATION_JSON)
+                                    .content(Mapper.writeValueAsString(it))
+                            )
+                                .andExpect(MockMvcResultMatchers.status().isCreated)
+                                .andReturn()
+                                .let { mvcResult -> Mapper.readValue(mvcResult.response.contentAsString) as Booking }
+                        }
+
+                    Then("bookings should be added") {
+                        createdBookings.first() shouldBe bookings.first().copy(id = createdBookings.first().id)
+                        createdBookings.last() shouldBe bookings.last().copy(id = createdBookings.last().id)
+                    }
+                }
+            }
+            And("get bookings between") {
+                val expected =
+                    (BookingStub.nonConflictingBookings + BookingStub.wednesdayNoonBooking).sortedBy { it.start }
+
+                val result = mvc.perform(
+                    MockMvcRequestBuilders.get(url)
+                        .param("fromDate", fromDateTime.toString())
+                        .param("toDate", toDateTime.toString())
+                )
+                    .andExpect(MockMvcResultMatchers.status().isOk)
+                    .andReturn()
+
+                val actual: List<Booking> = Mapper.readValue(result.response.contentAsString)
+
+                Then("should return list of 3 bookings") {
+                    actual.size shouldBe 3
+                    actual.forEachIndexed { index, booking -> booking shouldBe expected[index].copy(id = booking.id) }
                 }
             }
         }

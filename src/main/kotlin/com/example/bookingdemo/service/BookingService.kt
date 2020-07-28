@@ -35,6 +35,7 @@ class BookingService(
                         it.findAllByRoomIdAndStartLessThanEqualAndEndGreaterThan(roomId, fromDate, fromDate)
             }.distinctBy { it.id }
         }
+            .sortedBy { it.start }
 
     fun getAllBetween(fromDate: Instant?, toDate: Instant?): List<Booking> =
         when {
