@@ -1,8 +1,6 @@
-package com.example.bookingdemo.service
+package com.example.bookingdemo.domain.room
 
-import com.example.bookingdemo.model.Room
-import com.example.bookingdemo.repository.BookingRepository
-import com.example.bookingdemo.repository.RoomRepository
+import com.example.bookingdemo.domain.booking.BookingRepository
 import org.springframework.stereotype.Service
 import java.time.Instant
 

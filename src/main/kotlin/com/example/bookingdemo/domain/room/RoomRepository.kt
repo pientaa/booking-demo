@@ -1,6 +1,5 @@
-package com.example.bookingdemo.repository
+package com.example.bookingdemo.domain.room
 
-import com.example.bookingdemo.model.Room
 import org.springframework.data.mongodb.repository.MongoRepository
 
 interface RoomRepository : MongoRepository<Room, String>

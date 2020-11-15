@@ -1,6 +1,5 @@
-package com.example.bookingdemo.repository
+package com.example.bookingdemo.domain.booking
 
-import com.example.bookingdemo.model.Booking
 import org.springframework.data.mongodb.repository.MongoRepository
 import java.time.Instant
 

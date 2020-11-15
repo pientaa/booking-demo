@@ -1,7 +1,7 @@
-package com.example.bookingdemo.controller
+package com.example.bookingdemo.api
 
-import com.example.bookingdemo.model.Room
-import com.example.bookingdemo.service.RoomService
+import com.example.bookingdemo.domain.room.Room
+import com.example.bookingdemo.domain.room.RoomService
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity

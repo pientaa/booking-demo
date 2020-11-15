@@ -2,7 +2,8 @@ package com.example.bookingdemo.service
 
 import com.example.bookingdemo.infastructure.RoomConflictException
 import com.example.bookingdemo.infrastructure.AbstractBookingTest
-import com.example.bookingdemo.model.Booking
+import com.example.bookingdemo.domain.booking.Booking
+import com.example.bookingdemo.domain.booking.BookingService
 import io.kotest.matchers.shouldBe
 import org.springframework.boot.test.context.SpringBootTest
 import java.time.LocalDateTime

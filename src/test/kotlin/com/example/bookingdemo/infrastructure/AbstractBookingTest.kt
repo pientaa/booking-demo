@@ -1,6 +1,6 @@
 package com.example.bookingdemo.infrastructure
 
-import com.example.bookingdemo.service.BookingService
+import com.example.bookingdemo.domain.booking.BookingService
 import com.example.bookingdemo.stubs.BookingStub
 import io.kotest.core.spec.style.BehaviorSpec
 

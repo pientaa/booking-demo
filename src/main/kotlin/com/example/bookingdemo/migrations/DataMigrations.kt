@@ -1,7 +1,7 @@
-package com.example.bookingdemo.persistence
+package com.example.bookingdemo.migrations
 
-import com.example.bookingdemo.model.Booking
-import com.example.bookingdemo.model.Room
+import com.example.bookingdemo.domain.booking.Booking
+import com.example.bookingdemo.domain.room.Room
 import com.github.mongobee.changeset.ChangeLog
 import com.github.mongobee.changeset.ChangeSet
 import org.springframework.data.mongodb.core.MongoTemplate

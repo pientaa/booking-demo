@@ -1,4 +1,4 @@
-package com.example.bookingdemo.persistence
+package com.example.bookingdemo.migrations
 
 import com.github.mongobee.Mongobee
 import org.springframework.beans.factory.annotation.Autowired
@@ -17,7 +17,7 @@ class MongobeeConfig {
 
         runner.setMongoTemplate(mongoTemplate)
 
-        runner.setChangeLogsScanPackage("com.example.bookingdemo.persistence")
+        runner.setChangeLogsScanPackage("com.example.bookingdemo.migrations")
         return runner
     }
 }

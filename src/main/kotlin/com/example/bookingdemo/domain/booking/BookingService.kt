@@ -1,11 +1,9 @@
-package com.example.bookingdemo.service
+package com.example.bookingdemo.domain.booking
 
 import com.example.bookingdemo.infastructure.BookingNotFoundException
 import com.example.bookingdemo.infastructure.RoomConflictException
 import com.example.bookingdemo.infastructure.RoomNotFoundException
-import com.example.bookingdemo.model.Booking
-import com.example.bookingdemo.repository.BookingRepository
-import com.example.bookingdemo.repository.RoomRepository
+import com.example.bookingdemo.domain.room.RoomRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.time.Instant
