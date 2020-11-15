@@ -1,8 +1,6 @@
-package com.example.bookingdemo.service
+package com.example.bookingdemo.domain.booking
 
 import com.example.bookingdemo.infastructure.RoomConflictException
-import com.example.bookingdemo.domain.booking.Booking
-import com.example.bookingdemo.domain.booking.BookingService
 import io.kotest.core.spec.style.AnnotationSpec
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.assertThrows

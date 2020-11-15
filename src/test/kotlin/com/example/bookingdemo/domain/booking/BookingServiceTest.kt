@@ -1,4 +1,4 @@
-package com.example.bookingdemo.service
+package com.example.bookingdemo.domain.booking
 
 import com.example.bookingdemo.infastructure.RoomConflictException
 import com.example.bookingdemo.infrastructure.AbstractBookingTest
