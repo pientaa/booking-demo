@@ -1,7 +1,7 @@
-package com.example.bookingdemo.migrations
+package com.example.bookingdemo.common.configuration.migrations
 
-import com.example.bookingdemo.domain.booking.Booking
-import com.example.bookingdemo.domain.room.Room
+import com.example.bookingdemo.query.domain.booking.Booking
+import com.example.bookingdemo.query.domain.room.Room
 import com.github.mongobee.changeset.ChangeLog
 import com.github.mongobee.changeset.ChangeSet
 import org.springframework.data.mongodb.core.MongoTemplate

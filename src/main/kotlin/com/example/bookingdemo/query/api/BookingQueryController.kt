@@ -1,28 +1,19 @@
-package com.example.bookingdemo.api
+package com.example.bookingdemo.query.api
 
-import com.example.bookingdemo.domain.booking.Booking
-import com.example.bookingdemo.domain.booking.BookingService
+import com.example.bookingdemo.query.domain.booking.Booking
+import com.example.bookingdemo.query.domain.booking.BookingService
 import org.springframework.format.annotation.DateTimeFormat
-import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 
 @RestController
 @RequestMapping("/bookings")
-class BookingController(
+class BookingQueryController(
     val bookingService: BookingService
 ) {
-    @PostMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    fun create(@RequestBody booking: Booking): Booking = bookingService.save(booking)
-
     @GetMapping("/{bookingId}")
     fun getBooking(@PathVariable bookingId: String): Booking = bookingService.getById(bookingId)
-
-    @PutMapping("/{bookingId}")
-    fun updateBooking(@PathVariable bookingId: String, @RequestBody booking: Booking): Booking =
-        bookingService.updateBooking(bookingId, booking)
 
     @GetMapping
     fun getAllByRoomIdAndBetween(
@@ -41,8 +32,4 @@ class BookingController(
             fromDate?.toInstant(ZoneOffset.UTC),
             toDate?.toInstant(ZoneOffset.UTC)
         )
-
-    @DeleteMapping("/{bookingId}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun delete(@PathVariable bookingId: String) = bookingService.deleteById(bookingId)
 }

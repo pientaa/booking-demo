@@ -1,9 +1,8 @@
-package com.example.bookingdemo.infastructure
+package com.example.bookingdemo.common.infastructure
 
 import org.springframework.http.HttpStatus
 import org.springframework.web.server.ResponseStatusException
 import java.time.Instant
-import java.util.*
 
 open class ServiceException(
     private val httpStatus: HttpStatus = HttpStatus.INTERNAL_SERVER_ERROR,

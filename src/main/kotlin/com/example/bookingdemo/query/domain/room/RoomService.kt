@@ -1,6 +1,6 @@
-package com.example.bookingdemo.domain.room
+package com.example.bookingdemo.query.domain.room
 
-import com.example.bookingdemo.domain.booking.BookingRepository
+import com.example.bookingdemo.query.domain.booking.BookingRepository
 import org.springframework.stereotype.Service
 import java.time.Instant
 

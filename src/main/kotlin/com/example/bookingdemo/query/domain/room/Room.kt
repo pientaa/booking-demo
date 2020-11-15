@@ -1,4 +1,4 @@
-package com.example.bookingdemo.domain.room
+package com.example.bookingdemo.query.domain.room
 
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document

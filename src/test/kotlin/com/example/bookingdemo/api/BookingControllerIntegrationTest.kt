@@ -2,8 +2,8 @@ package com.example.bookingdemo.api
 
 import com.example.bookingdemo.infrastructure.AbstractBookingTest
 import com.example.bookingdemo.infrastructure.Mapper
-import com.example.bookingdemo.domain.booking.Booking
-import com.example.bookingdemo.domain.booking.BookingService
+import com.example.bookingdemo.query.domain.booking.Booking
+import com.example.bookingdemo.query.domain.booking.BookingService
 import com.example.bookingdemo.stubs.BookingStub
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.kotlintest.shouldBe

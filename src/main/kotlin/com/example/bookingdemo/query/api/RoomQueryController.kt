@@ -1,7 +1,7 @@
-package com.example.bookingdemo.api
+package com.example.bookingdemo.query.api
 
-import com.example.bookingdemo.domain.room.Room
-import com.example.bookingdemo.domain.room.RoomService
+import com.example.bookingdemo.query.domain.room.Room
+import com.example.bookingdemo.query.domain.room.RoomService
 import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
@@ -11,12 +11,9 @@ import java.time.ZoneOffset
 
 @RestController
 @RequestMapping("/rooms")
-class RoomController(
+class RoomQueryController(
     private val roomService: RoomService
 ) {
-    @PostMapping
-    fun saveRoom(@RequestBody room: Room): Room = roomService.save(room)
-
     @GetMapping
     fun getAll(): List<Room> = roomService.getAll()
 

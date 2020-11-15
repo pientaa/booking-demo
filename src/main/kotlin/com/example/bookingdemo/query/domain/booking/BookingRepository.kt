@@ -1,5 +1,6 @@
-package com.example.bookingdemo.domain.booking
+package com.example.bookingdemo.query.domain.booking
 
+import com.example.bookingdemo.query.domain.booking.Booking
 import org.springframework.data.mongodb.repository.MongoRepository
 import java.time.Instant
 

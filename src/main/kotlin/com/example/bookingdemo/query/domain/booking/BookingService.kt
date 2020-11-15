@@ -1,9 +1,11 @@
-package com.example.bookingdemo.domain.booking
+package com.example.bookingdemo.query.domain.booking
 
-import com.example.bookingdemo.infastructure.BookingNotFoundException
-import com.example.bookingdemo.infastructure.RoomConflictException
-import com.example.bookingdemo.infastructure.RoomNotFoundException
-import com.example.bookingdemo.domain.room.RoomRepository
+import com.example.bookingdemo.common.infastructure.BookingNotFoundException
+import com.example.bookingdemo.common.infastructure.RoomConflictException
+import com.example.bookingdemo.common.infastructure.RoomNotFoundException
+import com.example.bookingdemo.common.model.event.BookingCreated
+import com.example.bookingdemo.query.domain.room.RoomRepository
+import org.springframework.context.event.EventListener
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.time.Instant
@@ -13,11 +15,12 @@ class BookingService(
     private val bookingRepository: BookingRepository,
     private val roomRepository: RoomRepository
 ) {
-    fun save(booking: Booking): Booking = roomRepository.findByIdOrNull(booking.roomId)?.run {
-        if (getAllByRoomIdAndBetween(booking.roomId, booking.start, booking.end).none { it.id != booking.id })
-            bookingRepository.save(booking)
-        else throw RoomConflictException(booking.roomId, booking.start, booking.end)
-    } ?: throw RoomNotFoundException(booking.roomId)
+    @EventListener(BookingCreated::class)
+    fun save(event: BookingCreated): Booking = roomRepository.findByIdOrNull(event.roomId)?.run {
+        if (getAllByRoomIdAndBetween(event.roomId, event.start, event.end).none { it.id != event.id.toString() })
+            bookingRepository.save(Booking(event))
+        else throw RoomConflictException(event.roomId, event.start, event.end)
+    } ?: throw RoomNotFoundException(event.roomId)
 
     fun getById(bookingId: String): Booking = bookingRepository.findByIdOrNull(bookingId)
             ?: throw BookingNotFoundException(bookingId)
@@ -48,6 +51,6 @@ class BookingService(
 
     fun deleteById(bookingId: String) = bookingRepository.deleteById(bookingId)
 
-    fun updateBooking(bookingId: String, booking: Booking): Booking =
-        getById(bookingId).run { save(booking.copy(id = bookingId)) }
+//    fun updateBooking(bookingId: String, booking: Booking): Booking =
+//        getById(bookingId).run { save(booking.copy(id = bookingId)) }
 }
