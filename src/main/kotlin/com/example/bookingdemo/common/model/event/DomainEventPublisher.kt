@@ -1,4 +1,4 @@
-package com.example.bookingdemo.common.model
+package com.example.bookingdemo.common.model.event
 
 import org.slf4j.LoggerFactory
 import org.springframework.context.ApplicationEventPublisher
@@ -13,7 +13,7 @@ class DomainEventPublisher(
     }
 
     fun publishEvent(domainEvent: DomainEvent) {
-        logger.info("Domain event: ${domainEvent.type} with id: ${domainEvent.id} published", domainEvent)
+        logger.info("Domain event: ${domainEvent.eventType} with id: ${domainEvent.id} published", domainEvent)
         applicationEventPublisher.publishEvent(domainEvent)
     }
 }

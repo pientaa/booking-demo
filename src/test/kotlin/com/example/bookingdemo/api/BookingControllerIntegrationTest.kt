@@ -2,8 +2,8 @@ package com.example.bookingdemo.api
 
 import com.example.bookingdemo.infrastructure.AbstractBookingTest
 import com.example.bookingdemo.infrastructure.Mapper
-import com.example.bookingdemo.query.domain.booking.Booking
-import com.example.bookingdemo.query.domain.booking.BookingService
+import com.example.bookingdemo.common.model.Booking
+import com.example.bookingdemo.query.domain.booking.BookingQueryService
 import com.example.bookingdemo.stubs.BookingStub
 import com.fasterxml.jackson.module.kotlin.readValue
 import io.kotlintest.shouldBe
@@ -19,8 +19,8 @@ import java.time.LocalDateTime
 @SpringBootTest
 final class BookingControllerIntegrationTest(
     applicationContext: WebApplicationContext,
-    bookingService: BookingService
-) : AbstractBookingTest(bookingService) {
+    bookingQueryService: BookingQueryService
+) : AbstractBookingTest(bookingQueryService) {
 
     lateinit var mvc: MockMvc
 

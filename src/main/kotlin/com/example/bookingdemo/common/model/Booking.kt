@@ -1,6 +1,5 @@
-package com.example.bookingdemo.query.domain.booking
+package com.example.bookingdemo.common.model
 
-import com.example.bookingdemo.common.model.event.BookingCreated
 import com.fasterxml.jackson.annotation.JsonFormat
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
@@ -15,11 +14,4 @@ data class Booking(
     val start: Instant,
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "UTC")
     val end: Instant
-) {
-    constructor(event: BookingCreated) : this(
-        id = event.id.toString(),
-        roomId = event.roomId,
-        start = event.start,
-        end = event.end
-    )
-}
+)

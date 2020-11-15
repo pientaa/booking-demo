@@ -2,8 +2,8 @@ package com.example.bookingdemo.domain.booking
 
 import com.example.bookingdemo.common.infastructure.RoomConflictException
 import com.example.bookingdemo.infrastructure.AbstractBookingTest
-import com.example.bookingdemo.query.domain.booking.Booking
-import com.example.bookingdemo.query.domain.booking.BookingService
+import com.example.bookingdemo.common.model.Booking
+import com.example.bookingdemo.query.domain.booking.BookingQueryService
 import io.kotest.matchers.shouldBe
 import org.springframework.boot.test.context.SpringBootTest
 import java.time.LocalDateTime
@@ -11,8 +11,8 @@ import java.time.ZoneOffset
 
 @SpringBootTest
 final class BookingServiceTest(
-    private val bookingService: BookingService
-) : AbstractBookingTest(bookingService) {
+    private val bookingQueryService: BookingQueryService
+) : AbstractBookingTest(bookingQueryService) {
     init {
         Given("new booking") {
             val booking = Booking(
@@ -23,7 +23,7 @@ final class BookingServiceTest(
             )
 
             When("save it") {
-                val createdBooking = bookingService.save(booking)
+                val createdBooking = bookingQueryService.save(booking)
 
                 Then("should be saved") {
                     createdBooking shouldBe booking.copy(id = createdBooking.id)
@@ -31,7 +31,7 @@ final class BookingServiceTest(
             }
             And("try to save it again") {
                 val result = try {
-                    bookingService.save(booking)
+                    bookingQueryService.save(booking)
                 } catch (e: Exception) {
                     e
                 }

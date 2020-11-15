@@ -1,7 +1,7 @@
 package com.example.bookingdemo.command.api
 
 import com.example.bookingdemo.command.domain.BookingCommandService
-import com.example.bookingdemo.query.domain.booking.Booking
+import com.example.bookingdemo.common.model.Booking
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 

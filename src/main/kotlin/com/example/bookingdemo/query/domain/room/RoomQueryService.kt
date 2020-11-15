@@ -1,16 +1,16 @@
 package com.example.bookingdemo.query.domain.room
 
-import com.example.bookingdemo.query.domain.booking.BookingRepository
+import com.example.bookingdemo.common.model.Room
+import com.example.bookingdemo.common.repository.BookingRepository
+import com.example.bookingdemo.common.repository.RoomRepository
 import org.springframework.stereotype.Service
 import java.time.Instant
 
 @Service
-class RoomService(
+class RoomQueryService(
     private val roomRepository: RoomRepository,
     private val bookingRepository: BookingRepository
 ) {
-    fun save(room: Room): Room = roomRepository.save(room)
-
     fun getAll(): List<Room> = roomRepository.findAll()
 
     fun getAllAvailableRoomsBetween(start: Instant, end: Instant): List<Room> {

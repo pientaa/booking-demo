@@ -1,8 +1,8 @@
 package com.example.bookingdemo.domain.booking
 
 import com.example.bookingdemo.common.infastructure.RoomConflictException
-import com.example.bookingdemo.query.domain.booking.Booking
-import com.example.bookingdemo.query.domain.booking.BookingService
+import com.example.bookingdemo.common.model.Booking
+import com.example.bookingdemo.query.domain.booking.BookingQueryService
 import io.kotest.core.spec.style.AnnotationSpec
 import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.assertThrows
@@ -11,12 +11,12 @@ import java.time.LocalDateTime
 import java.time.ZoneOffset
 
 @SpringBootTest
-class BookingServiceAnnotationSpec(private val bookingService: BookingService) : AnnotationSpec() {
+class BookingServiceAnnotationSpec(private val bookingQueryService: BookingQueryService) : AnnotationSpec() {
 
     @BeforeAll
     fun cleanUp() {
-        bookingService.getAllBetween(fromDate = null, toDate = null)
-            .forEach { bookingService.deleteById(it.id!!) }
+        bookingQueryService.getAllBetween(fromDate = null, toDate = null)
+            .forEach { bookingQueryService.deleteById(it.id!!) }
     }
 
     @Test
@@ -30,7 +30,7 @@ class BookingServiceAnnotationSpec(private val bookingService: BookingService) :
         )
 
         // when
-        val createdBooking = bookingService.save(booking)
+        val createdBooking = bookingQueryService.save(booking)
 
         // then
         assertEquals(booking.copy(id = createdBooking.id), createdBooking)
@@ -45,9 +45,9 @@ class BookingServiceAnnotationSpec(private val bookingService: BookingService) :
             start = LocalDateTime.of(2020, 5, 13, 10, 0).toInstant(ZoneOffset.UTC),
             end = LocalDateTime.of(2020, 5, 13, 12, 0).toInstant(ZoneOffset.UTC)
         )
-        bookingService.save(booking)
+        bookingQueryService.save(booking)
 
         // then
-        assertThrows<RoomConflictException> { bookingService.save(booking) }
+        assertThrows<RoomConflictException> { bookingQueryService.save(booking) }
     }
 }

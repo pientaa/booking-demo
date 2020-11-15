@@ -9,6 +9,10 @@ open class ServiceException(
     override val message: String
 ) : ResponseStatusException(httpStatus, message)
 
+class RoomAlreadyExistsException(
+    roomNumber: String
+) : ServiceException(HttpStatus.BAD_REQUEST, "Room with number: $roomNumber already exists")
+
 class RoomNotFoundException(
     roomId: String
 ) : ServiceException(HttpStatus.NOT_FOUND, "Room with id: $roomId not found")

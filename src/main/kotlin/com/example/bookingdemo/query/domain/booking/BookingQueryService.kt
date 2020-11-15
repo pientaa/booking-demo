@@ -1,26 +1,16 @@
 package com.example.bookingdemo.query.domain.booking
 
 import com.example.bookingdemo.common.infastructure.BookingNotFoundException
-import com.example.bookingdemo.common.infastructure.RoomConflictException
-import com.example.bookingdemo.common.infastructure.RoomNotFoundException
-import com.example.bookingdemo.common.model.event.BookingCreated
-import com.example.bookingdemo.query.domain.room.RoomRepository
-import org.springframework.context.event.EventListener
+import com.example.bookingdemo.common.model.Booking
+import com.example.bookingdemo.common.repository.BookingRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.time.Instant
 
 @Service
-class BookingService(
-    private val bookingRepository: BookingRepository,
-    private val roomRepository: RoomRepository
+class BookingQueryService(
+    private val bookingRepository: BookingRepository
 ) {
-    @EventListener(BookingCreated::class)
-    fun save(event: BookingCreated): Booking = roomRepository.findByIdOrNull(event.roomId)?.run {
-        if (getAllByRoomIdAndBetween(event.roomId, event.start, event.end).none { it.id != event.id.toString() })
-            bookingRepository.save(Booking(event))
-        else throw RoomConflictException(event.roomId, event.start, event.end)
-    } ?: throw RoomNotFoundException(event.roomId)
 
     fun getById(bookingId: String): Booking = bookingRepository.findByIdOrNull(bookingId)
             ?: throw BookingNotFoundException(bookingId)
@@ -48,9 +38,4 @@ class BookingService(
                         it.findAllByStartLessThanEqualAndEndGreaterThan(fromDate, fromDate)
             }.distinctBy { it.id }
         }
-
-    fun deleteById(bookingId: String) = bookingRepository.deleteById(bookingId)
-
-//    fun updateBooking(bookingId: String, booking: Booking): Booking =
-//        getById(bookingId).run { save(booking.copy(id = bookingId)) }
 }
