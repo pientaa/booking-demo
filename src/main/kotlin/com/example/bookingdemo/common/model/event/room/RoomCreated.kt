@@ -10,7 +10,7 @@ data class RoomCreated(
     val hasProjector: Boolean
 ) : DomainEvent(eventType = "RoomCreated", aggregateId = roomId) {
     constructor(room: Room) : this(
-        roomId = room.id!!, //TODO: Throw exception
+        roomId = room.id!!,
         number = room.number,
         hasWhiteboard = room.hasWhiteboard,
         hasProjector = room.hasProjector

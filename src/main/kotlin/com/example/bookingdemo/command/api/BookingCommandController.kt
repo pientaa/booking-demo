@@ -13,9 +13,7 @@ class BookingCommandController(
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun createBooking(@RequestBody booking: Booking) {
-        bookingCommandService.save(booking)
-    }
+    fun createBooking(@RequestBody booking: Booking): Booking = bookingCommandService.save(booking)
 
     @PutMapping("/{bookingId}")
     fun updateBooking(@PathVariable bookingId: String, @RequestBody booking: Booking) {
@@ -25,6 +23,6 @@ class BookingCommandController(
     @DeleteMapping("/{bookingId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     fun delete(@PathVariable bookingId: String) {
-        //bookingService.deleteById(bookingId)
+        bookingCommandService.deleteById(bookingId)
     }
 }

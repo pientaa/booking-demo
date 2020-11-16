@@ -13,7 +13,7 @@ class DomainEventPublisher(
     }
 
     fun publishEvent(domainEvent: DomainEvent) {
-        logger.info("Domain event: ${domainEvent.eventType} with id: ${domainEvent.id} published", domainEvent)
+        logger.info("Domain event: ${domainEvent.eventType} with id: ${domainEvent.id}", domainEvent)
         applicationEventPublisher.publishEvent(domainEvent)
     }
 }

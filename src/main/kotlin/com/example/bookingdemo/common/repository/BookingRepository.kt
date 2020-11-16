@@ -17,4 +17,8 @@ interface BookingRepository : MongoRepository<Booking, String> {
     fun findAllByRoomIdAndStartLessThanEqualAndEndGreaterThan(
         roomId: String, fromDate: Instant, toDate: Instant
     ): List<Booking>
+
+    fun findAllByRoomIdAndEndGreaterThanAndStartLessThanEqual(
+        roomId: String, fromDate: Instant, toDate: Instant
+    ): List<Booking>
 }

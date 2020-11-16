@@ -6,8 +6,8 @@ import java.time.ZoneOffset
 import java.util.*
 
 open class DomainEvent(
-    val eventType: String,
-    val id: String = UUID.randomUUID().toString(),
+    var eventType: String,
+    var id: String = UUID.randomUUID().toString(),
     var aggregateId: String,
-    val createdOn: Instant = LocalDateTime.now().toInstant(ZoneOffset.UTC)
+    var createdOn: Instant = LocalDateTime.now().toInstant(ZoneOffset.UTC)
 )

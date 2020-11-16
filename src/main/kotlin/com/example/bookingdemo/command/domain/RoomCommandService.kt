@@ -13,11 +13,11 @@ class RoomCommandService(
     private val domainEventPublisher: DomainEventPublisher
 ) {
 
-    fun save(room: Room) {
+    fun save(room: Room): Room {
         if (roomRepository.findByNumber(room.number) != null)
             throw RoomAlreadyExistsException(room.number)
 
-        val roomCreated = roomRepository.save(room)
-        domainEventPublisher.publishEvent(RoomCreated(roomCreated))
+        return roomRepository.save(room)
+            .also { domainEventPublisher.publishEvent(RoomCreated(it)) }
     }
 }
