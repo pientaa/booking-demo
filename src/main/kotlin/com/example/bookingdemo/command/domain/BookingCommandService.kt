@@ -8,6 +8,7 @@ import com.example.bookingdemo.common.model.event.DomainEventPublisher
 import com.example.bookingdemo.common.model.event.EventStore
 import com.example.bookingdemo.common.model.event.booking.BookingCancelled
 import com.example.bookingdemo.common.model.event.booking.BookingCreated
+import com.example.bookingdemo.common.model.event.booking.BookingUpdated
 import com.example.bookingdemo.common.repository.BookingRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
@@ -19,10 +20,10 @@ class BookingCommandService(
     private val eventStore: EventStore
 ) {
 
-    fun save(booking: Booking): Booking {
+    fun create(booking: Booking): Booking {
         eventStore.findByAggregateId(booking.roomId) ?: throw RoomNotFoundException(booking.roomId)
 
-        val overlappingBookings = bookingRepository.findAllByRoomIdAndEndGreaterThanAndStartLessThanEqual(
+        val overlappingBookings = bookingRepository.findAllByRoomIdAndEndGreaterThanAndStartLessThan(
             roomId = booking.roomId,
             fromDate = booking.start,
             toDate = booking.end
@@ -33,6 +34,24 @@ class BookingCommandService(
 
         return bookingRepository.save(booking)
             .also { domainEventPublisher.publishEvent(BookingCreated(it)) }
+    }
+
+    fun update(booking: Booking): Booking {
+        bookingRepository.findByIdOrNull(booking.id!!) ?: throw BookingNotFoundException(booking.id)
+        eventStore.findByAggregateId(booking.roomId) ?: throw RoomNotFoundException(booking.roomId)
+
+        val overlappingBookings = bookingRepository.findAllByRoomIdAndEndGreaterThanAndStartLessThan(
+            roomId = booking.roomId,
+            fromDate = booking.start,
+            toDate = booking.end
+        )
+            .filter { it.id != booking.id }
+
+        if (overlappingBookings.isNotEmpty())
+            throw RoomConflictException(booking.roomId, booking.start, booking.end)
+
+        return bookingRepository.save(booking)
+            .also { domainEventPublisher.publishEvent(BookingUpdated(it)) }
     }
 
     fun deleteById(bookingId: String) {

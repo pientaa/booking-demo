@@ -18,5 +18,5 @@ class EventStream(
         return this
     }
 
-    fun events(): List<DomainEvent> = events.sortedBy { it.createdOn }
+    fun events(): List<DomainEvent> = events.sortedBy { it.occuredAt }
 }

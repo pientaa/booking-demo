@@ -13,7 +13,7 @@ class RoomCommandService(
     private val domainEventPublisher: DomainEventPublisher
 ) {
 
-    fun save(room: Room): Room {
+    fun create(room: Room): Room {
         if (roomRepository.findByNumber(room.number) != null)
             throw RoomAlreadyExistsException(room.number)
 

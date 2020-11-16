@@ -9,5 +9,5 @@ open class DomainEvent(
     var eventType: String,
     var id: String = UUID.randomUUID().toString(),
     var aggregateId: String,
-    var createdOn: Instant = LocalDateTime.now().toInstant(ZoneOffset.UTC)
+    var occuredAt: Instant = LocalDateTime.now().toInstant(ZoneOffset.UTC)
 )

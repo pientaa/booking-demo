@@ -13,5 +13,5 @@ class RoomCommandController(
     private val roomCommandService: RoomCommandService
 ) {
     @PostMapping
-    fun saveRoom(@RequestBody room: Room): Room = roomCommandService.save(room)
+    fun createRoom(@RequestBody room: Room): Room = roomCommandService.create(room)
 }

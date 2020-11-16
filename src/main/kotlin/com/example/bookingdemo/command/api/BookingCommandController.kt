@@ -13,16 +13,15 @@ class BookingCommandController(
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun createBooking(@RequestBody booking: Booking): Booking = bookingCommandService.save(booking)
+    fun createBooking(@RequestBody booking: Booking): Booking =
+        bookingCommandService.create(booking)
 
     @PutMapping("/{bookingId}")
-    fun updateBooking(@PathVariable bookingId: String, @RequestBody booking: Booking) {
-//                bookingService.updateBooking(bookingId, booking)
-    }
+    fun updateBooking(@PathVariable bookingId: String, @RequestBody booking: Booking): Booking =
+        bookingCommandService.update(booking.copy(id = bookingId))
 
     @DeleteMapping("/{bookingId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    fun delete(@PathVariable bookingId: String) {
+    fun delete(@PathVariable bookingId: String) =
         bookingCommandService.deleteById(bookingId)
-    }
 }
