@@ -1,18 +1,18 @@
 package com.example.bookingdemo.infrastructure
 
-import com.example.bookingdemo.service.BookingService
+import com.example.bookingdemo.query.domain.booking.BookingQueryService
 import com.example.bookingdemo.stubs.BookingStub
 import io.kotest.core.spec.style.BehaviorSpec
 
-abstract class AbstractBookingTest(private val bookingService: BookingService) : BehaviorSpec({
+abstract class AbstractBookingTest(private val bookingQueryService: BookingQueryService) : BehaviorSpec({
     beforeSpec {
-        bookingService.getAllBetween(fromDate = null, toDate = null)
-            .forEach { bookingService.deleteById(it.id!!) }
+        bookingQueryService.getAllBetween(fromDate = null, toDate = null)
+            .forEach { bookingQueryService.deleteById(it.id!!) }
 
-        bookingService.save(BookingStub.wednesdayNoonBooking)
+        bookingQueryService.save(BookingStub.wednesdayNoonBooking)
     }
     afterSpec {
-        bookingService.getAllBetween(fromDate = null, toDate = null)
-            .forEach { bookingService.deleteById(it.id!!) }
+        bookingQueryService.getAllBetween(fromDate = null, toDate = null)
+            .forEach { bookingQueryService.deleteById(it.id!!) }
     }
 })
