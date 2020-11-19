@@ -18,5 +18,10 @@ class EventStream(
         return this
     }
 
+    fun addAll(events: List<DomainEvent>): EventStream {
+        this.events.addAll(events)
+        return this
+    }
+
     fun events(): List<DomainEvent> = events.sortedBy { it.occuredAt }
 }
