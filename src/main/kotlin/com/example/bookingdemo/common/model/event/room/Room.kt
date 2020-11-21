@@ -26,7 +26,7 @@ class Room(
 
     var bookings = mutableMapOf<String, Booking>()
 
-    fun addBooking(booking: Booking): String {
+    fun addBooking(booking: Booking): Booking {
         val overlappingBookings = getUpcomingBookingsBetween(booking.start, booking.end)
 
         if (overlappingBookings.isNotEmpty())
@@ -36,10 +36,10 @@ class Room(
 
         registerEvent(BookingCreated(booking))
 
-        return booking.id
+        return booking
     }
 
-    fun updateBooking(booking: Booking): String {
+    fun updateBooking(booking: Booking): Booking {
         val oldBooking = getBooking(bookingId = booking.id)
 
         val overlappingBookings = getUpcomingBookingsBetween(booking.start, booking.end)
@@ -52,7 +52,7 @@ class Room(
 
         registerEvent(BookingUpdated(booking))
 
-        return booking.id
+        return booking
     }
 
     fun cancelBooking(bookingId: String) {
@@ -66,7 +66,7 @@ class Room(
         val now = LocalDateTime.now().toInstant(ZoneOffset.UTC)
         return bookings.values.filter { booking ->
             !booking.end.isBefore(now) && booking.isNotCancelled() &&
-            booking.end.isAfter(start) && booking.start.isBefore(end)
+                    booking.end.isAfter(start) && booking.start.isBefore(end)
         }
     }
 

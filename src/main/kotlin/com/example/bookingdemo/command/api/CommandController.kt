@@ -15,7 +15,7 @@ class CommandController(
 
     @PostMapping("/{roomId}/bookings")
     @ResponseStatus(HttpStatus.CREATED)
-    fun createBooking(@PathVariable roomId: String, @RequestBody booking: BookingDTO): String =
+    fun createBooking(@PathVariable roomId: String, @RequestBody booking: BookingDTO): BookingDTO =
         commandService.createBooking(CreateBooking(roomId, booking.start, booking.end))
 
     @PutMapping("/{roomId}/bookings/{bookingId}")
@@ -23,11 +23,11 @@ class CommandController(
         @PathVariable roomId: String,
         @PathVariable bookingId: String,
         @RequestBody booking: BookingDTO
-    ): String {
-        return commandService.updateBooking(UpdateBooking(roomId, bookingId, booking.start, booking.end))
-    }
+    ): BookingDTO =
+        commandService.updateBooking(UpdateBooking(roomId, bookingId, booking.start, booking.end))
 
     @DeleteMapping("/{roomId}/bookings/{bookingId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     fun cancelBooking(@PathVariable roomId: String, @PathVariable bookingId: String) {
         commandService.cancelBooking(CancelBooking(roomId, bookingId))
     }
