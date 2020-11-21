@@ -29,4 +29,11 @@ class RoomBookingCommandService(
         roomRepository.save(room)
         return bookingId
     }
+
+    fun cancelBooking(command: CancelBooking) {
+        val room = roomRepository.findByIdOrNull(command.roomId) ?: throw Exception() //TODO
+
+        room.cancelBooking(command.bookingId)
+        roomRepository.save(room)
+    }
 }

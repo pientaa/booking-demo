@@ -37,6 +37,8 @@ class Booking(
         state = BookingState.CANCELLED
     }
 
+    fun isNotCancelled(): Boolean = this.state != BookingState.CANCELLED
+
     enum class BookingState {
         CREATED,
         UPDATED,

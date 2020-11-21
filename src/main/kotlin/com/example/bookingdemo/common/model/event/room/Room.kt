@@ -55,11 +55,18 @@ class Room(
         return booking.id
     }
 
+    fun cancelBooking(bookingId: String) {
+        getBooking(bookingId = bookingId)
+            .cancelBooking()
+
+        registerEvent(BookingCancelled(bookingId))
+    }
+
     private fun getUpcomingBookingsBetween(start: Instant, end: Instant): List<Booking> {
         val now = LocalDateTime.now().toInstant(ZoneOffset.UTC)
         return bookings.values.filter { booking ->
-            !booking.end.isBefore(now) &&
-                    booking.end.isAfter(start) && booking.start.isBefore(end)
+            !booking.end.isBefore(now) && booking.isNotCancelled()
+            booking.end.isAfter(start) && booking.start.isBefore(end)
         }
     }
 
