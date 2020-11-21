@@ -1,10 +1,16 @@
 package com.example.bookingdemo.command
 
+import com.example.bookingdemo.common.infastructure.BookingDateException
+import com.example.bookingdemo.common.infastructure.RoomNotFoundException
 import com.example.bookingdemo.common.model.event.booking.Booking
 import com.example.bookingdemo.common.model.event.room.Room
 import com.example.bookingdemo.common.model.event.room.RoomRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
+import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
+import java.time.ZoneOffset
 
 @Service
 class RoomBookingCommandService(
@@ -14,7 +20,9 @@ class RoomBookingCommandService(
         roomRepository.findByNumber(command.number)?.roomId ?: roomRepository.save(Room(command)).getId()
 
     fun createBooking(command: CreateBooking): String {
-        val room = roomRepository.findByIdOrNull(command.roomId) ?: throw Exception() //TODO
+
+
+        val room = findByIdOrException(command.roomId)
         val bookingId = room.addBooking(Booking(command))
 
         roomRepository.save(room)
@@ -22,7 +30,10 @@ class RoomBookingCommandService(
     }
 
     fun updateBooking(command: UpdateBooking): String {
-        val room = roomRepository.findByIdOrNull(command.roomId) ?: throw Exception() //TODO
+        val today = LocalDateTime.of(LocalDate.now(), LocalTime.MIN).toInstant(ZoneOffset.UTC)
+        if (command.start.isBefore(today)) throw BookingDateException()
+
+        val room = findByIdOrException(command.roomId)
 
         val bookingId = room.updateBooking(Booking(command))
 
@@ -31,9 +42,11 @@ class RoomBookingCommandService(
     }
 
     fun cancelBooking(command: CancelBooking) {
-        val room = roomRepository.findByIdOrNull(command.roomId) ?: throw Exception() //TODO
-
+        val room = findByIdOrException(command.roomId)
         room.cancelBooking(command.bookingId)
         roomRepository.save(room)
     }
+
+    private fun findByIdOrException(roomId: String) =
+        roomRepository.findByIdOrNull(roomId) ?: throw RoomNotFoundException(roomId = roomId)
 }

@@ -24,3 +24,7 @@ class BookingNotFoundException(
 class RoomConflictException(
     roomId: String, start: Instant, end: Instant
 ) : ServiceException(HttpStatus.CONFLICT, "Room with id: $roomId is already booked in period: $start - $end")
+
+class BookingDateException : ServiceException(HttpStatus.BAD_REQUEST, "Cannot create booking in the past.")
+
+class InvalidDateTimeParamsException : ServiceException(HttpStatus.BAD_REQUEST, "Start cannot be after end.")
