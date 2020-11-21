@@ -1,5 +1,6 @@
 package com.example.bookingdemo.common.model.event
 
+import com.example.bookingdemo.command.CreateBooking
 import com.example.bookingdemo.common.model.Booking
 import java.time.Instant
 
@@ -21,11 +22,13 @@ data class BookingCreated private constructor(
 
 data class BookingUpdated(
     val bookingId: String,
+    val roomId: String,
     val start: Instant,
     val end: Instant
 ) : RoomEvent() {
     constructor(booking: Booking) : this(
         bookingId = booking.id,
+        roomId = booking.roomId,
         start = booking.start,
         end = booking.end
     )

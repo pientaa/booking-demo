@@ -25,13 +25,7 @@ class Booking(
         end = updatedBooking.end
     )
 
-    private var state: BookingState = BookingState.CREATED
-
-    fun updateBooking(newStart: Instant, newEnd: Instant) {
-        start = newStart
-        end = newEnd
-        state = BookingState.UPDATED
-    }
+    private var state: BookingState = BookingState.ACTIVE
 
     fun cancelBooking() {
         state = BookingState.CANCELLED
@@ -40,8 +34,7 @@ class Booking(
     fun isNotCancelled(): Boolean = this.state != BookingState.CANCELLED
 
     enum class BookingState {
-        CREATED,
-        UPDATED,
+        ACTIVE,
         CANCELLED
     }
 }

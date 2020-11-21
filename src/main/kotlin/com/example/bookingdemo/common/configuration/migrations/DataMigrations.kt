@@ -1,3 +1,4 @@
+/*
 package com.example.bookingdemo.common.configuration.migrations
 
 import com.example.bookingdemo.common.model.Booking
@@ -55,3 +56,4 @@ class DataMigrations {
             .map { mongoTemplate.insert(it) }.toList()
     }
 }
+*/

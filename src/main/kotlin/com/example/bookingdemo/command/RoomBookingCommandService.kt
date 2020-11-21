@@ -7,6 +7,9 @@ import com.example.bookingdemo.common.infastructure.RoomNotFoundException
 import com.example.bookingdemo.common.model.Booking
 import com.example.bookingdemo.common.model.Room
 import com.example.bookingdemo.common.model.RoomRepository
+import com.example.bookingdemo.common.model.event.BookingCancelled
+import com.example.bookingdemo.common.model.event.BookingCreated
+import com.example.bookingdemo.common.model.event.BookingUpdated
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.time.Instant
@@ -22,20 +25,24 @@ class RoomBookingCommandService(
 
     fun createBooking(command: CreateBooking): BookingDTO {
         val room = findByIdOrException(command.roomId)
+            .getAggregate() as Room
 
         val overlappingBookings = room.getUpcomingBookingsBetween(command.start, command.end)
 
         if (overlappingBookings.isNotEmpty())
             throw RoomConflictException(command.roomId, command.start, command.end)
 
-        val booking = room.addBooking(Booking(command))
+        val booking = Booking(command)
 
-        roomRepository.save(room)
+        room.handle(BookingCreated(booking))
+            .let { roomRepository.save(it as Room) }
+
         return BookingDTO(booking)
     }
 
     fun updateBooking(command: UpdateBooking): BookingDTO {
         val room = findByIdOrException(command.roomId)
+            .getAggregate() as Room
 
         val overlappingBookings = room.getUpcomingBookingsBetween(command.start, command.end)
             .filter { it.id != command.roomId }
@@ -43,15 +50,19 @@ class RoomBookingCommandService(
         if (overlappingBookings.isNotEmpty())
             throw RoomConflictException(command.roomId, command.start, command.end)
 
-        val booking = room.updateBooking(command.bookingId, Booking(command))
+        val booking = Booking(command)
 
-        roomRepository.save(room)
+        room.handle(BookingUpdated(booking))
+            .let { roomRepository.save(it as Room) }
+
         return BookingDTO(booking)
     }
 
     fun cancelBooking(command: CancelBooking) {
         val room = findByIdOrException(command.roomId)
-        room.cancelBooking(command.bookingId)
+            .getAggregate() as Room
+
+        room.handle(BookingCancelled(command.bookingId))
         roomRepository.save(room)
     }
 

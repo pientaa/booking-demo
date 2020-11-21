@@ -1,13 +1,12 @@
 package com.example.bookingdemo.common.model
 
 import com.example.bookingdemo.command.CreateRoom
-import com.example.bookingdemo.common.infastructure.BookingNotFoundException
 import com.example.bookingdemo.common.model.event.*
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 
 @Document
-class Room(
+open class Room(
     @Id
     var roomId: String? = null,
     val number: String,
@@ -22,30 +21,58 @@ class Room(
 
     var bookings = mutableMapOf<String, Booking>()
 
-    fun addBooking(booking: Booking): Booking {
-        bookings[booking.id] = booking
+    override fun handle(event: RoomEvent): Room {
+        return when (event) {
+            is BookingCancelled -> throw IllegalStateException()
+            is BookingUpdated -> throw  IllegalStateException()
+            is BookingCreated -> RoomPartlyBooked(this, event)
+        }
+    }
+}
 
-        registerEvent(BookingCreated(booking))
+class RoomPartlyBooked private constructor(
+    roomId: String? = null,
+    number: String,
+    hasWhiteboard: Boolean,
+    hasProjector: Boolean
+) : Room(roomId, number, hasWhiteboard, hasProjector) {
 
-        return booking
+    companion object {
+        operator fun invoke(room: Room, event: BookingCreated): RoomPartlyBooked {
+            return RoomPartlyBooked(room.roomId, room.number, room.hasWhiteboard, room.hasProjector)
+                .apply {
+                    val booking =
+                        Booking(id = event.bookingId, roomId = event.roomId, start = event.start, end = event.end)
+                    bookings[booking.id] = booking
+                }
+        }
     }
 
-    fun updateBooking(bookingId: String, booking: Booking): Booking {
-        getBooking(bookingId = bookingId)
-            .updateBooking(newStart = booking.start, newEnd = booking.end)
-
-        registerEvent(BookingUpdated(booking))
-
-        return booking
+    override fun handle(event: RoomEvent): Room {
+        return when (event) {
+            is BookingCancelled -> handle(event)
+            is BookingUpdated -> handle(event)
+            is BookingCreated -> handle(event)
+        }
     }
 
-    fun cancelBooking(bookingId: String) {
-        getBooking(bookingId = bookingId)
-            .cancelBooking()
-
-        registerEvent(BookingCancelled(bookingId))
+    private fun handle(event: BookingCreated): RoomPartlyBooked {
+        return this.apply {
+            val booking = Booking(id = event.bookingId, roomId = event.roomId, start = event.start, end = event.end)
+            bookings[booking.id] = booking
+        }
     }
 
-    private fun getBooking(bookingId: String) = bookings[bookingId] ?: throw BookingNotFoundException(bookingId)
-    fun getId(): String = roomId ?: throw Exception()
+    private fun handle(event: BookingUpdated): RoomPartlyBooked {
+        return this.apply {
+            val booking = Booking(id = event.bookingId, roomId = event.roomId, start = event.start, end = event.end)
+            bookings[booking.id] = booking
+        }
+    }
+
+    private fun handle(event: BookingCancelled): RoomPartlyBooked {
+        return this.apply {
+            bookings.remove(event.bookingId)
+        }
+    }
 }
