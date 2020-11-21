@@ -6,7 +6,7 @@ Presented on branch [mvc-demo](https://github.com/pientaa/booking-demo/tree/mvc-
 
 ## CQRS with Event Sourcing demo
 
-For now it's just CQRS + Events.
+In progress... 
 
 Presented on branch [master](https://github.com/pientaa/booking-demo/tree/master)
 
