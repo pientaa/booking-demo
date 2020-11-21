@@ -1,17 +1,10 @@
 package com.example.bookingdemo.common.model
 
 import com.example.bookingdemo.command.CreateRoom
-import com.example.bookingdemo.common.infastructure.RoomConflictException
-import com.example.bookingdemo.common.model.event.AggregateRoot
-import com.example.bookingdemo.common.model.event.BookingCancelled
-import com.example.bookingdemo.common.model.event.BookingCreated
-import com.example.bookingdemo.common.model.event.BookingUpdated
-import com.example.bookingdemo.common.model.event.RoomEvent
+import com.example.bookingdemo.common.infastructure.BookingNotFoundException
+import com.example.bookingdemo.common.model.event.*
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
-import java.time.Instant
-import java.time.LocalDateTime
-import java.time.ZoneOffset
 
 @Document
 class Room(
@@ -30,11 +23,6 @@ class Room(
     var bookings = mutableMapOf<String, Booking>()
 
     fun addBooking(booking: Booking): Booking {
-        val overlappingBookings = getUpcomingBookingsBetween(booking.start, booking.end)
-
-        if (overlappingBookings.isNotEmpty())
-            throw RoomConflictException(getId(), booking.start, booking.end)
-
         bookings[booking.id] = booking
 
         registerEvent(BookingCreated(booking))
@@ -42,16 +30,9 @@ class Room(
         return booking
     }
 
-    fun updateBooking(booking: Booking): Booking {
-        val oldBooking = getBooking(bookingId = booking.id)
-
-        val overlappingBookings = getUpcomingBookingsBetween(booking.start, booking.end)
-            .filter { it.id != booking.id }
-
-        if (overlappingBookings.isNotEmpty())
-            throw RoomConflictException(getId(), booking.start, booking.end)
-
-        oldBooking.updateBooking(newStart = booking.start, newEnd = booking.end)
+    fun updateBooking(bookingId: String, booking: Booking): Booking {
+        getBooking(bookingId = bookingId)
+            .updateBooking(newStart = booking.start, newEnd = booking.end)
 
         registerEvent(BookingUpdated(booking))
 
@@ -65,14 +46,6 @@ class Room(
         registerEvent(BookingCancelled(bookingId))
     }
 
-    private fun getUpcomingBookingsBetween(start: Instant, end: Instant): List<Booking> {
-        val now = LocalDateTime.now().toInstant(ZoneOffset.UTC)
-        return bookings.values.filter { booking ->
-            !booking.end.isBefore(now) && booking.isNotCancelled() &&
-                    booking.end.isAfter(start) && booking.start.isBefore(end)
-        }
-    }
-
-    private fun getBooking(bookingId: String) = bookings[bookingId] ?: throw Exception() //TODO
+    private fun getBooking(bookingId: String) = bookings[bookingId] ?: throw BookingNotFoundException(bookingId)
     fun getId(): String = roomId ?: throw Exception()
 }
