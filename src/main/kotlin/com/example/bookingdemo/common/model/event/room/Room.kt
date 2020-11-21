@@ -1,10 +1,14 @@
 package com.example.bookingdemo.common.model.event.room
 
 import com.example.bookingdemo.command.CreateRoom
+import com.example.bookingdemo.common.infastructure.RoomConflictException
 import com.example.bookingdemo.common.model.event.AggregateRoot
 import com.example.bookingdemo.common.model.event.booking.Booking
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
+import java.time.Instant
+import java.time.LocalDateTime
+import java.time.ZoneOffset
 
 @Document
 class Room(
@@ -23,7 +27,10 @@ class Room(
     var bookings = mutableMapOf<String, Booking>()
 
     fun addBooking(booking: Booking): String {
-        //TODO: Check if not conflicting
+        val overlappingBookings = getUpcomingBookingsBetween(booking.start, booking.end)
+
+        if (overlappingBookings.isNotEmpty())
+            throw RoomConflictException(getId(), booking.start, booking.end)
 
         bookings[booking.id] = booking
 
@@ -32,12 +39,28 @@ class Room(
         return booking.id
     }
 
-    fun updateBooking(booking: Booking) {
-        getBooking(bookingId = booking.id)
+    fun updateBooking(booking: Booking): String {
+        val oldBooking = getBooking(bookingId = booking.id)
 
-        //TODO: Check if not conflicting with another (not himself)
+        val overlappingBookings = getUpcomingBookingsBetween(booking.start, booking.end)
+            .filter { it.id != booking.id }
+
+        if (overlappingBookings.isNotEmpty())
+            throw RoomConflictException(getId(), booking.start, booking.end)
+
+        oldBooking.updateBooking(newStart = booking.start, newEnd = booking.end)
 
         registerEvent(BookingUpdated(booking))
+
+        return booking.id
+    }
+
+    private fun getUpcomingBookingsBetween(start: Instant, end: Instant): List<Booking> {
+        val now = LocalDateTime.now().toInstant(ZoneOffset.UTC)
+        return bookings.values.filter { booking ->
+            !booking.end.isBefore(now) &&
+                    booking.end.isAfter(start) && booking.start.isBefore(end)
+        }
     }
 
     private fun getBooking(bookingId: String) = bookings[bookingId] ?: throw Exception() //TODO

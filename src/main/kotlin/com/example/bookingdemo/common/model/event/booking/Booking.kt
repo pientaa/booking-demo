@@ -1,6 +1,7 @@
 package com.example.bookingdemo.common.model.event.booking
 
 import com.example.bookingdemo.command.CreateBooking
+import com.example.bookingdemo.command.UpdateBooking
 import java.time.Instant
 import java.util.*
 
@@ -15,6 +16,13 @@ class Booking(
         roomId = createBooking.roomId,
         start = createBooking.start,
         end = createBooking.end
+    )
+
+    constructor(updatedBooking: UpdateBooking) : this(
+        id = updatedBooking.bookingId,
+        roomId = updatedBooking.roomId,
+        start = updatedBooking.start,
+        end = updatedBooking.end
     )
 
     private var state: BookingState = BookingState.CREATED

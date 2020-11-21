@@ -20,4 +20,13 @@ class RoomBookingCommandService(
         roomRepository.save(room)
         return bookingId
     }
+
+    fun updateBooking(command: UpdateBooking): String {
+        val room = roomRepository.findByIdOrNull(command.roomId) ?: throw Exception() //TODO
+
+        val bookingId = room.updateBooking(Booking(command))
+
+        roomRepository.save(room)
+        return bookingId
+    }
 }

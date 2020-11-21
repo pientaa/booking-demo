@@ -16,3 +16,12 @@ class CreateBooking(
     @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "UTC")
     var end: Instant
 )
+
+class UpdateBooking(
+    val bookingId: String,
+    val roomId: String,
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "UTC")
+    var start: Instant,
+    @JsonFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "UTC")
+    var end: Instant
+)
