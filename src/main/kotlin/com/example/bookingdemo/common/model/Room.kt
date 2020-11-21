@@ -1,9 +1,12 @@
-package com.example.bookingdemo.common.model.event.room
+package com.example.bookingdemo.common.model
 
 import com.example.bookingdemo.command.CreateRoom
 import com.example.bookingdemo.common.infastructure.RoomConflictException
 import com.example.bookingdemo.common.model.event.AggregateRoot
-import com.example.bookingdemo.common.model.event.booking.Booking
+import com.example.bookingdemo.common.model.event.BookingCancelled
+import com.example.bookingdemo.common.model.event.BookingCreated
+import com.example.bookingdemo.common.model.event.BookingUpdated
+import com.example.bookingdemo.common.model.event.RoomEvent
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 import java.time.Instant

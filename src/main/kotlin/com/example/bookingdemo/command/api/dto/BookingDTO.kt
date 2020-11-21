@@ -1,6 +1,6 @@
 package com.example.bookingdemo.command.api.dto
 
-import com.example.bookingdemo.common.model.event.booking.Booking
+import com.example.bookingdemo.common.model.Booking
 import com.fasterxml.jackson.annotation.JsonFormat
 import java.time.Instant
 

@@ -1,4 +1,4 @@
-package com.example.bookingdemo.common.model.event.booking
+package com.example.bookingdemo.common.model
 
 import com.example.bookingdemo.command.CreateBooking
 import com.example.bookingdemo.command.UpdateBooking

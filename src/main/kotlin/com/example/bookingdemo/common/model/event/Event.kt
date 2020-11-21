@@ -1,7 +1,6 @@
-package com.example.bookingdemo.common.model.event.room
+package com.example.bookingdemo.common.model.event
 
-import com.example.bookingdemo.common.model.event.DomainEvent
-import com.example.bookingdemo.common.model.event.booking.Booking
+import com.example.bookingdemo.common.model.Booking
 import java.time.Instant
 
 sealed class RoomEvent : DomainEvent()

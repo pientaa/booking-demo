@@ -1,7 +1,7 @@
 package com.example.bookingdemo.common.configuration.migrations
 
-import com.example.bookingdemo.common.model.event.booking.Booking
-import com.example.bookingdemo.common.model.event.room.Room
+import com.example.bookingdemo.common.model.Booking
+import com.example.bookingdemo.common.model.Room
 import com.github.mongobee.changeset.ChangeLog
 import com.github.mongobee.changeset.ChangeSet
 import org.springframework.data.mongodb.core.MongoTemplate

@@ -1,6 +1,6 @@
 package com.example.bookingdemo.command.api.dto
 
-import com.example.bookingdemo.common.model.event.room.Room
+import com.example.bookingdemo.common.model.Room
 
 class RoomDTO(
     var roomId: String? = null,
