@@ -72,7 +72,7 @@ class RoomBookingCommandService(
     private fun Room.getUpcomingBookingsBetween(start: Instant, end: Instant): List<Booking> {
         val now = LocalDateTime.now().toInstant(ZoneOffset.UTC)
         return bookings.values.filter { booking ->
-            !booking.end.isBefore(now) && booking.isNotCancelled() &&
+            !booking.end.isBefore(now) &&
                     booking.end.isAfter(start) && booking.start.isBefore(end)
         }
     }

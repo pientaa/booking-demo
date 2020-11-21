@@ -24,17 +24,4 @@ class Booking(
         start = updatedBooking.start,
         end = updatedBooking.end
     )
-
-    private var state: BookingState = BookingState.ACTIVE
-
-    fun cancelBooking() {
-        state = BookingState.CANCELLED
-    }
-
-    fun isNotCancelled(): Boolean = this.state != BookingState.CANCELLED
-
-    enum class BookingState {
-        ACTIVE,
-        CANCELLED
-    }
 }
