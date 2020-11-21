@@ -1,6 +1,7 @@
 package com.example.bookingdemo.command
 
 import com.example.bookingdemo.command.api.BookingDTO
+import com.example.bookingdemo.command.api.RoomDTO
 import com.example.bookingdemo.common.infastructure.RoomNotFoundException
 import com.example.bookingdemo.common.model.event.booking.Booking
 import com.example.bookingdemo.common.model.event.room.Room
@@ -12,8 +13,8 @@ import org.springframework.stereotype.Service
 class RoomBookingCommandService(
     private val roomRepository: RoomRepository
 ) {
-    fun createRoom(command: CreateRoom): String =
-        roomRepository.findByNumber(command.number)?.roomId ?: roomRepository.save(Room(command)).getId()
+    fun createRoom(command: CreateRoom): RoomDTO =
+        RoomDTO((roomRepository.findByNumber(command.number) ?: roomRepository.save(Room(command))))
 
     fun createBooking(command: CreateBooking): BookingDTO {
         val room = findByIdOrException(command.roomId)

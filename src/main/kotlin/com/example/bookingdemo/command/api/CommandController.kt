@@ -11,7 +11,8 @@ class CommandController(
 ) {
 
     @PostMapping
-    fun createRoom(@RequestBody command: CreateRoom): String = commandService.createRoom(command)
+    fun createRoom(@RequestBody roomDTO: RoomDTO): RoomDTO =
+        commandService.createRoom(CreateRoom(roomDTO.number, roomDTO.hasWhiteboard, roomDTO.hasWhiteboard))
 
     @PostMapping("/{roomId}/bookings")
     @ResponseStatus(HttpStatus.CREATED)
