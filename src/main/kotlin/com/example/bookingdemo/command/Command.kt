@@ -1,4 +1,4 @@
-package com.example.bookingdemo.common.model.event.room
+package com.example.bookingdemo.command
 
 import com.fasterxml.jackson.annotation.JsonFormat
 import java.time.Instant

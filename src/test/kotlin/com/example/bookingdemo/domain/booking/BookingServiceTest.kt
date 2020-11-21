@@ -2,7 +2,6 @@ package com.example.bookingdemo.domain.booking
 
 import com.example.bookingdemo.common.infastructure.RoomConflictException
 import com.example.bookingdemo.infrastructure.AbstractBookingTest
-import com.example.bookingdemo.common.model.Booking
 import com.example.bookingdemo.query.domain.booking.BookingQueryService
 import io.kotest.matchers.shouldBe
 import org.springframework.boot.test.context.SpringBootTest

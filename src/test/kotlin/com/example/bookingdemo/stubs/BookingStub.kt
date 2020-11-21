@@ -1,6 +1,5 @@
 package com.example.bookingdemo.stubs
 
-import com.example.bookingdemo.common.model.Booking
 import java.time.LocalDateTime
 import java.time.ZoneOffset
 

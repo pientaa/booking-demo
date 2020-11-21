@@ -1,5 +1,6 @@
 package com.example.bookingdemo.common.model.event.room
 
+import com.example.bookingdemo.command.CreateRoom
 import com.example.bookingdemo.common.model.event.AggregateRoot
 import com.example.bookingdemo.common.model.event.booking.Booking
 import org.springframework.data.annotation.Id

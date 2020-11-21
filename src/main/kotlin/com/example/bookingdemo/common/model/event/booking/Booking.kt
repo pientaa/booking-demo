@@ -1,6 +1,6 @@
 package com.example.bookingdemo.common.model.event.booking
 
-import com.example.bookingdemo.common.model.event.room.CreateBooking
+import com.example.bookingdemo.command.CreateBooking
 import java.time.Instant
 import java.util.*
 

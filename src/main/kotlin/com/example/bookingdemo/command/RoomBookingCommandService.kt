@@ -1,11 +1,13 @@
-package com.example.bookingdemo.common.model.event.room
+package com.example.bookingdemo.command
 
 import com.example.bookingdemo.common.model.event.booking.Booking
+import com.example.bookingdemo.common.model.event.room.Room
+import com.example.bookingdemo.common.model.event.room.RoomRepository
 import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 
 @Service
-class RoomBookingService(
+class RoomBookingCommandService(
     private val roomRepository: RoomRepository
 ) {
     fun createRoom(command: CreateRoom): String =
