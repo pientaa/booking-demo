@@ -1,6 +1,8 @@
 package com.example.bookingdemo.command.api
 
 import com.example.bookingdemo.command.*
+import com.example.bookingdemo.command.api.dto.BookingDTO
+import com.example.bookingdemo.command.api.dto.RoomDTO
 import org.springframework.http.HttpStatus
 import org.springframework.web.bind.annotation.*
 

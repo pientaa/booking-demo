@@ -1,4 +1,4 @@
-package com.example.bookingdemo.command.api
+package com.example.bookingdemo.command.api.dto
 
 import com.example.bookingdemo.common.model.event.room.Room
 

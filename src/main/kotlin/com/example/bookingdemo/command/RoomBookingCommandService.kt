@@ -1,7 +1,7 @@
 package com.example.bookingdemo.command
 
-import com.example.bookingdemo.command.api.BookingDTO
-import com.example.bookingdemo.command.api.RoomDTO
+import com.example.bookingdemo.command.api.dto.BookingDTO
+import com.example.bookingdemo.command.api.dto.RoomDTO
 import com.example.bookingdemo.common.infastructure.RoomNotFoundException
 import com.example.bookingdemo.common.model.event.booking.Booking
 import com.example.bookingdemo.common.model.event.room.Room

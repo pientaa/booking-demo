@@ -1,4 +1,4 @@
-package com.example.bookingdemo.command.api
+package com.example.bookingdemo.command.api.dto
 
 import com.example.bookingdemo.common.model.event.booking.Booking
 import com.fasterxml.jackson.annotation.JsonFormat
