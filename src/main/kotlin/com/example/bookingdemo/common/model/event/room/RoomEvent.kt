@@ -4,7 +4,7 @@ import com.example.bookingdemo.common.model.event.DomainEvent
 import com.example.bookingdemo.common.model.event.booking.Booking
 import java.time.Instant
 
-sealed class RoomEvent : DomainEvent
+sealed class RoomEvent : DomainEvent()
 
 data class BookingCreated private constructor(
     val bookingId: String,
