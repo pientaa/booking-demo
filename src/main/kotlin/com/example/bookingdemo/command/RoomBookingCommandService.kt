@@ -1,73 +1,84 @@
 package com.example.bookingdemo.command
 
-import com.example.bookingdemo.command.api.dto.BookingDTO
 import com.example.bookingdemo.command.api.dto.RoomDTO
 import com.example.bookingdemo.common.infastructure.RoomConflictException
-import com.example.bookingdemo.common.infastructure.RoomNotFoundException
 import com.example.bookingdemo.common.model.Booking
+import com.example.bookingdemo.common.model.EventStore
 import com.example.bookingdemo.common.model.Room
-import com.example.bookingdemo.common.model.RoomRepository
-import com.example.bookingdemo.common.model.event.BookingCancelled
-import com.example.bookingdemo.common.model.event.BookingCreated
-import com.example.bookingdemo.common.model.event.BookingUpdated
-import org.springframework.data.repository.findByIdOrNull
 import org.springframework.stereotype.Service
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneOffset
+import java.util.*
 
 @Service
 class RoomBookingCommandService(
-    private val roomRepository: RoomRepository
+    private val store: EventStore
 ) {
-    fun createRoom(command: CreateRoom): RoomDTO =
-        RoomDTO((roomRepository.findByNumber(command.number) ?: roomRepository.save(Room(command))))
+    fun createRoom(command: CreateRoom): RoomDTO {
+        val room = store.getRoom(command.number)
 
-    fun createBooking(command: CreateBooking): BookingDTO {
-        val room = findByIdOrException(command.roomId)
-            .getAggregate() as Room
+        val event = command.toEvent(room.roomId)
 
-        val overlappingBookings = room.getUpcomingBookingsBetween(command.start, command.end)
-
-        if (overlappingBookings.isNotEmpty())
-            throw RoomConflictException(command.roomId, command.start, command.end)
-
-        val booking = Booking(command)
-
-        room.handle(BookingCreated(booking))
-            .let { roomRepository.save(it as Room) }
-
-        return BookingDTO(booking)
+        return room.handle(event)
+            .also { store.saveEvent(command.number, event) } //This could be catch in some event service and saved there
+            .let { RoomDTO(it as Room) }
+            .also {
+                //TODO: Publish event
+            }
     }
 
-    fun updateBooking(command: UpdateBooking): BookingDTO {
-        val room = findByIdOrException(command.roomId)
+    fun createBooking(command: CreateBooking) {
+        val room = store.getRoom(command.number)
             .getAggregate() as Room
 
         val overlappingBookings = room.getUpcomingBookingsBetween(command.start, command.end)
-            .filter { it.id != command.roomId }
 
         if (overlappingBookings.isNotEmpty())
-            throw RoomConflictException(command.roomId, command.start, command.end)
+            throw RoomConflictException(command.number, command.start, command.end)
 
-        val booking = Booking(command)
+        val bookingId = UUID.randomUUID().toString()
 
-        room.handle(BookingUpdated(booking))
-            .let { roomRepository.save(it as Room) }
+        val event = command.toEvent(bookingId)
 
-        return BookingDTO(booking)
+        room.handle(event)
+            .also { store.saveEvent(command.number, event) } //This could be catch in some event service and saved there
+            .also {
+                //TODO: Publish event
+            }
+    }
+
+    fun updateBooking(command: UpdateBooking) {
+        val room = store.getRoom(command.number)
+            .getAggregate() as Room
+
+        val overlappingBookings = room.getUpcomingBookingsBetween(command.start, command.end)
+            .filter { it.id != command.number }
+
+        if (overlappingBookings.isNotEmpty())
+            throw RoomConflictException(command.number, command.start, command.end)
+
+        val event = command.toEvent()
+
+        room.handle(event)
+            .also { store.saveEvent(command.number, event) } //This could be catch in some event service and saved there
+            .also {
+                //TODO: Publish event
+            }
     }
 
     fun cancelBooking(command: CancelBooking) {
-        val room = findByIdOrException(command.roomId)
+        val room = store.getRoom(command.number)
             .getAggregate() as Room
 
-        room.handle(BookingCancelled(command.bookingId))
-        roomRepository.save(room)
+//        room.handle(BookingCancelled(command.bookingId))
+//        store.save(room)
+
+        //        publish: BookingCancelled
     }
 
-    private fun findByIdOrException(roomId: String) =
-        roomRepository.findByIdOrNull(roomId) ?: throw RoomNotFoundException(roomId = roomId)
+//    private fun findByNumberOrException(number: String) =
+//        store.findByNumber(number) ?: throw RoomNotFoundException(roomId = number)
 
     private fun Room.getUpcomingBookingsBetween(start: Instant, end: Instant): List<Booking> {
         val now = LocalDateTime.now().toInstant(ZoneOffset.UTC)

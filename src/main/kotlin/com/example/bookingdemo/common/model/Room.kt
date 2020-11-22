@@ -1,45 +1,58 @@
 package com.example.bookingdemo.common.model
 
-import com.example.bookingdemo.command.CreateRoom
 import com.example.bookingdemo.common.model.event.*
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
+import java.util.*
 
 @Document
-open class Room(
+sealed class Room(val number: String, var hasWhiteboard: Boolean? = null, var hasProjector: Boolean? = null) :
+    AggregateRoot<RoomEvent>(aggregateId = number) {
     @Id
-    var roomId: String? = null,
-    val number: String,
-    val hasWhiteboard: Boolean,
-    val hasProjector: Boolean
-) : AggregateRoot<RoomEvent>() {
-    constructor(command: CreateRoom) : this(
-        number = command.number,
-        hasWhiteboard = command.hasWhiteboard,
-        hasProjector = command.hasProjector
-    )
-
+    var roomId: String = UUID.randomUUID().toString()
     var bookings = mutableMapOf<String, Booking>()
+    override fun domainEvents() = this.domainEvents.sortedBy { it.occuredAt }
+}
+
+open class UnInitializedRoom(number: String, hasWhiteboard: Boolean? = null, hasProjector: Boolean? = null) :
+    Room(number, hasWhiteboard, hasProjector) {
+    override fun handle(event: RoomEvent): AggregateRoot<RoomEvent> {
+        return when (event) {
+            is RoomCreated -> CreatedRoom(event)
+            else -> throw IllegalStateException()
+        }
+    }
+}
+
+open class CreatedRoom(
+    number: String,
+    hasWhiteboard: Boolean,
+    hasProjector: Boolean
+) : UnInitializedRoom(number, hasWhiteboard, hasProjector) {
+    constructor(roomCreated: RoomCreated) : this(
+        number = roomCreated.number,
+        hasWhiteboard = roomCreated.hasWhiteboard,
+        hasProjector = roomCreated.hasProjector
+    )
 
     override fun handle(event: RoomEvent): Room {
         return when (event) {
-            is BookingCancelled -> throw IllegalStateException()
-            is BookingUpdated -> throw  IllegalStateException()
             is BookingCreated -> RoomPartlyBooked(this, event)
+            is RoomCreated -> this
+            else -> throw IllegalAccessException()
         }
     }
 }
 
 class RoomPartlyBooked private constructor(
-    roomId: String? = null,
     number: String,
     hasWhiteboard: Boolean,
     hasProjector: Boolean
-) : Room(roomId, number, hasWhiteboard, hasProjector) {
+) : CreatedRoom(number, hasWhiteboard, hasProjector) {
 
     companion object {
-        operator fun invoke(room: Room, event: BookingCreated): RoomPartlyBooked {
-            return RoomPartlyBooked(room.roomId, room.number, room.hasWhiteboard, room.hasProjector)
+        operator fun invoke(room: CreatedRoom, event: BookingCreated): RoomPartlyBooked {
+            return RoomPartlyBooked(room.number, room.hasWhiteboard ?: false, room.hasProjector ?: false)
                 .apply {
                     val booking =
                         Booking(id = event.bookingId, roomId = event.roomId, start = event.start, end = event.end)
@@ -53,6 +66,7 @@ class RoomPartlyBooked private constructor(
             is BookingCancelled -> handle(event)
             is BookingUpdated -> handle(event)
             is BookingCreated -> handle(event)
+            is RoomCreated -> this
         }
     }
 

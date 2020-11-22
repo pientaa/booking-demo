@@ -1,12 +1,18 @@
 package com.example.bookingdemo.common.model.event
 
-import com.example.bookingdemo.command.CreateBooking
 import com.example.bookingdemo.common.model.Booking
 import java.time.Instant
 
 sealed class RoomEvent : DomainEvent()
 
-data class BookingCreated private constructor(
+data class RoomCreated(
+    var roomId: String,
+    val number: String,
+    val hasWhiteboard: Boolean,
+    val hasProjector: Boolean
+) : RoomEvent()
+
+data class BookingCreated(
     val bookingId: String,
     val roomId: String,
     val start: Instant,

@@ -1,10 +1,10 @@
 package com.example.bookingdemo.common.model.event
 
-abstract class AggregateRoot<EventType> {
+abstract class AggregateRoot<EventType>(var aggregateId: String) {
 
-    private var domainEvents = mutableListOf<EventType>()
+    var domainEvents = mutableListOf<EventType>()
 
-    fun domainEvents(): List<EventType> = domainEvents
+    protected abstract fun domainEvents(): List<EventType>
 
     protected fun registerEvent(event: EventType): EventType {
         domainEvents.add(event)
@@ -25,8 +25,9 @@ abstract class AggregateRoot<EventType> {
 
     protected abstract fun handle(event: EventType): AggregateRoot<EventType>
 
-    fun addAll(events: List<EventType>) {
+    fun addAll(events: List<EventType>): AggregateRoot<EventType> {
         domainEvents.addAll(events)
+        return this
     }
 
     protected fun clearDomainEvents() {

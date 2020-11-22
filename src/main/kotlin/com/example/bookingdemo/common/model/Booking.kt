@@ -13,14 +13,14 @@ class Booking(
 ) {
     constructor(createBooking: CreateBooking) : this(
         id = UUID.randomUUID().toString(),
-        roomId = createBooking.roomId,
+        roomId = createBooking.number,
         start = createBooking.start,
         end = createBooking.end
     )
 
     constructor(updatedBooking: UpdateBooking) : this(
         id = updatedBooking.bookingId,
-        roomId = updatedBooking.roomId,
+        roomId = updatedBooking.number,
         start = updatedBooking.start,
         end = updatedBooking.end
     )
