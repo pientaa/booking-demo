@@ -5,16 +5,20 @@ import com.example.bookingdemo.common.model.value.Booking
 import org.springframework.data.annotation.Id
 import java.util.*
 
-sealed class Room(val number: String, var hasWhiteboard: Boolean? = null, var hasProjector: Boolean? = null) :
+sealed class Room(val number: String) :
     AggregateRoot<DomainEvent>(aggregateId = number) {
     @Id
     var roomId: String = UUID.randomUUID().toString()
     var bookings = mutableMapOf<String, Booking>()
+
+    var hasWhiteboard: Boolean = false
+    var hasProjector: Boolean = false
+
     override fun domainEvents() = this.domainEvents.sortedBy { it.occurredAt }
 }
 
-open class UnInitializedRoom(number: String, hasWhiteboard: Boolean? = null, hasProjector: Boolean? = null) :
-    Room(number, hasWhiteboard, hasProjector) {
+open class UnInitializedRoom(number: String) : Room(number) {
+
     override fun handle(event: DomainEvent): AggregateRoot<DomainEvent> {
         return when (event) {
             is RoomCreated -> CreatedRoom(event)
@@ -23,16 +27,21 @@ open class UnInitializedRoom(number: String, hasWhiteboard: Boolean? = null, has
     }
 }
 
-open class CreatedRoom(
-    number: String,
-    hasWhiteboard: Boolean,
-    hasProjector: Boolean
-) : UnInitializedRoom(number, hasWhiteboard, hasProjector) {
-    constructor(roomCreated: RoomCreated) : this(
-        number = roomCreated.number,
-        hasWhiteboard = roomCreated.hasWhiteboard,
-        hasProjector = roomCreated.hasProjector
-    )
+open class CreatedRoom constructor(number: String) : UnInitializedRoom(number) {
+
+    companion object {
+        operator fun invoke(roomCreated: RoomCreated): CreatedRoom =
+            CreatedRoom(roomCreated.number).apply {
+                hasProjector = roomCreated.hasProjector
+                hasWhiteboard = roomCreated.hasWhiteboard
+            }
+
+        operator fun invoke(number: String, hasWhiteboard: Boolean, hasProjector: Boolean): CreatedRoom =
+            CreatedRoom(number).apply {
+                this.hasProjector = hasProjector
+                this.hasWhiteboard = hasWhiteboard
+            }
+    }
 
     override fun handle(event: DomainEvent): Room {
         return when (event) {
@@ -43,18 +52,19 @@ open class CreatedRoom(
     }
 }
 
-class RoomPartlyBooked private constructor(
-    number: String,
-    hasWhiteboard: Boolean,
-    hasProjector: Boolean
-) : CreatedRoom(number, hasWhiteboard, hasProjector) {
+class RoomPartlyBooked private constructor(number: String) : CreatedRoom(number) {
 
     companion object {
         operator fun invoke(room: CreatedRoom, event: BookingCreated): RoomPartlyBooked {
-            return RoomPartlyBooked(room.number, room.hasWhiteboard ?: false, room.hasProjector ?: false)
+            return RoomPartlyBooked(room.number)
                 .apply {
                     val booking =
-                        Booking(id = event.bookingId, roomId = event.roomNumber, start = event.start, end = event.end)
+                        Booking(
+                            id = event.bookingId,
+                            roomId = event.roomNumber,
+                            start = event.start,
+                            end = event.end
+                        )
                     bookings[booking.id] = booking
                 }
         }
@@ -72,14 +82,16 @@ class RoomPartlyBooked private constructor(
 
     private fun handle(event: BookingCreated): RoomPartlyBooked {
         return this.apply {
-            val booking = Booking(id = event.bookingId, roomId = event.roomNumber, start = event.start, end = event.end)
+            val booking =
+                Booking(id = event.bookingId, roomId = event.roomNumber, start = event.start, end = event.end)
             bookings[booking.id] = booking
         }
     }
 
     private fun handle(event: BookingUpdated): RoomPartlyBooked {
         return this.apply {
-            val booking = Booking(id = event.bookingId, roomId = event.roomNumber, start = event.start, end = event.end)
+            val booking =
+                Booking(id = event.bookingId, roomId = event.roomNumber, start = event.start, end = event.end)
             bookings[booking.id] = booking
         }
     }
