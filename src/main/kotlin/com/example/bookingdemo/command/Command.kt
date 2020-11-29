@@ -13,8 +13,8 @@ class CreateRoom(
     val hasWhiteboard: Boolean,
     val hasProjector: Boolean
 ) {
-    fun toEvent(roomId: String): RoomCreated =
-        RoomCreated(roomId, number, hasWhiteboard, hasProjector)
+    fun toEvent(number: String): RoomCreated =
+        RoomCreated(number, hasWhiteboard, hasProjector)
 }
 
 class CreateBooking(

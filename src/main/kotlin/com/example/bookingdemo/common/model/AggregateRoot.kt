@@ -1,4 +1,4 @@
-package com.example.bookingdemo.common.model.event
+package com.example.bookingdemo.common.model
 
 abstract class AggregateRoot<EventType>(var aggregateId: String) {
 
@@ -6,7 +6,7 @@ abstract class AggregateRoot<EventType>(var aggregateId: String) {
 
     protected abstract fun domainEvents(): List<EventType>
 
-    protected fun registerEvent(event: EventType): EventType {
+    private fun registerEvent(event: EventType): EventType {
         domainEvents.add(event)
         return event
     }

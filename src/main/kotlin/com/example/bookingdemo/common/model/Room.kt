@@ -1,17 +1,16 @@
 package com.example.bookingdemo.common.model
 
 import com.example.bookingdemo.common.model.event.*
+import com.example.bookingdemo.common.model.value.Booking
 import org.springframework.data.annotation.Id
-import org.springframework.data.mongodb.core.mapping.Document
 import java.util.*
 
-@Document
 sealed class Room(val number: String, var hasWhiteboard: Boolean? = null, var hasProjector: Boolean? = null) :
     AggregateRoot<RoomEvent>(aggregateId = number) {
     @Id
     var roomId: String = UUID.randomUUID().toString()
     var bookings = mutableMapOf<String, Booking>()
-    override fun domainEvents() = this.domainEvents.sortedBy { it.occuredAt }
+    override fun domainEvents() = this.domainEvents.sortedBy { it.occurredAt }
 }
 
 open class UnInitializedRoom(number: String, hasWhiteboard: Boolean? = null, hasProjector: Boolean? = null) :
@@ -55,7 +54,7 @@ class RoomPartlyBooked private constructor(
             return RoomPartlyBooked(room.number, room.hasWhiteboard ?: false, room.hasProjector ?: false)
                 .apply {
                     val booking =
-                        Booking(id = event.bookingId, roomId = event.roomId, start = event.start, end = event.end)
+                        Booking(id = event.bookingId, roomId = event.roomNumber, start = event.start, end = event.end)
                     bookings[booking.id] = booking
                 }
         }
@@ -72,14 +71,14 @@ class RoomPartlyBooked private constructor(
 
     private fun handle(event: BookingCreated): RoomPartlyBooked {
         return this.apply {
-            val booking = Booking(id = event.bookingId, roomId = event.roomId, start = event.start, end = event.end)
+            val booking = Booking(id = event.bookingId, roomId = event.roomNumber, start = event.start, end = event.end)
             bookings[booking.id] = booking
         }
     }
 
     private fun handle(event: BookingUpdated): RoomPartlyBooked {
         return this.apply {
-            val booking = Booking(id = event.bookingId, roomId = event.roomId, start = event.start, end = event.end)
+            val booking = Booking(id = event.bookingId, roomId = event.roomNumber, start = event.start, end = event.end)
             bookings[booking.id] = booking
         }
     }

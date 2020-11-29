@@ -2,9 +2,10 @@ package com.example.bookingdemo.command
 
 import com.example.bookingdemo.command.api.dto.RoomDTO
 import com.example.bookingdemo.common.infastructure.RoomConflictException
-import com.example.bookingdemo.common.model.Booking
-import com.example.bookingdemo.common.model.EventStore
 import com.example.bookingdemo.common.model.Room
+import com.example.bookingdemo.common.model.UnInitializedRoom
+import com.example.bookingdemo.common.model.event.EventStore
+import com.example.bookingdemo.common.model.value.Booking
 import org.springframework.stereotype.Service
 import java.time.Instant
 import java.time.LocalDateTime
@@ -16,12 +17,12 @@ class RoomBookingCommandService(
     private val store: EventStore
 ) {
     fun createRoom(command: CreateRoom): RoomDTO {
-        val room = store.getRoom(command.number)
+        val room = getRoom(command.number)
 
-        val event = command.toEvent(room.roomId)
+        val event = command.toEvent(room.number)
 
         return room.handle(event)
-            .also { store.saveEvent(command.number, event) } //This could be catch in some event service and saved there
+            .also { store.saveEvent(event) } //This could be catch in some event service and saved there
             .let { RoomDTO(it as Room) }
             .also {
                 //TODO: Publish event
@@ -29,8 +30,7 @@ class RoomBookingCommandService(
     }
 
     fun createBooking(command: CreateBooking) {
-        val room = store.getRoom(command.number)
-            .getAggregate() as Room
+        val room = getRoom(command.number)
 
         val overlappingBookings = room.getUpcomingBookingsBetween(command.start, command.end)
 
@@ -42,15 +42,14 @@ class RoomBookingCommandService(
         val event = command.toEvent(bookingId)
 
         room.handle(event)
-            .also { store.saveEvent(command.number, event) } //This could be catch in some event service and saved there
+            .also { store.saveEvent(event) } //This could be catch in some event service and saved there
             .also {
                 //TODO: Publish event
             }
     }
 
     fun updateBooking(command: UpdateBooking) {
-        val room = store.getRoom(command.number)
-            .getAggregate() as Room
+        val room = getRoom(command.number)
 
         val overlappingBookings = room.getUpcomingBookingsBetween(command.start, command.end)
             .filter { it.id != command.number }
@@ -61,15 +60,14 @@ class RoomBookingCommandService(
         val event = command.toEvent()
 
         room.handle(event)
-            .also { store.saveEvent(command.number, event) } //This could be catch in some event service and saved there
+            .also { store.saveEvent(event) } //This could be catch in some event service and saved there
             .also {
                 //TODO: Publish event
             }
     }
 
     fun cancelBooking(command: CancelBooking) {
-        val room = store.getRoom(command.number)
-            .getAggregate() as Room
+        val room = getRoom(command.number)
 
 //        room.handle(BookingCancelled(command.bookingId))
 //        store.save(room)
@@ -86,5 +84,12 @@ class RoomBookingCommandService(
             !booking.end.isBefore(now) &&
                     booking.end.isAfter(start) && booking.start.isBefore(end)
         }
+    }
+
+    private fun getRoom(aggregateId: String): Room {
+        val events = store.findByAggregateId(aggregateId)?.events ?: mutableListOf()
+        return (UnInitializedRoom(aggregateId)
+            .addAll(events)
+            .getAggregate() as Room)
     }
 }

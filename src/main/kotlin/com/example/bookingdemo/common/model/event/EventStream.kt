@@ -1,6 +1,5 @@
-package com.example.bookingdemo.common.model
+package com.example.bookingdemo.common.model.event
 
-import com.example.bookingdemo.common.model.event.RoomEvent
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
 import java.util.*
