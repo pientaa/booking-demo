@@ -6,7 +6,7 @@ import org.springframework.data.annotation.Id
 import java.util.*
 
 sealed class Room(val number: String, var hasWhiteboard: Boolean? = null, var hasProjector: Boolean? = null) :
-    AggregateRoot<RoomEvent>(aggregateId = number) {
+    AggregateRoot<DomainEvent>(aggregateId = number) {
     @Id
     var roomId: String = UUID.randomUUID().toString()
     var bookings = mutableMapOf<String, Booking>()
@@ -15,7 +15,7 @@ sealed class Room(val number: String, var hasWhiteboard: Boolean? = null, var ha
 
 open class UnInitializedRoom(number: String, hasWhiteboard: Boolean? = null, hasProjector: Boolean? = null) :
     Room(number, hasWhiteboard, hasProjector) {
-    override fun handle(event: RoomEvent): AggregateRoot<RoomEvent> {
+    override fun handle(event: DomainEvent): AggregateRoot<DomainEvent> {
         return when (event) {
             is RoomCreated -> CreatedRoom(event)
             else -> throw IllegalStateException()
@@ -34,7 +34,7 @@ open class CreatedRoom(
         hasProjector = roomCreated.hasProjector
     )
 
-    override fun handle(event: RoomEvent): Room {
+    override fun handle(event: DomainEvent): Room {
         return when (event) {
             is BookingCreated -> RoomPartlyBooked(this, event)
             is RoomCreated -> this
@@ -60,12 +60,13 @@ class RoomPartlyBooked private constructor(
         }
     }
 
-    override fun handle(event: RoomEvent): Room {
+    override fun handle(event: DomainEvent): Room {
         return when (event) {
             is BookingCancelled -> handle(event)
             is BookingUpdated -> handle(event)
             is BookingCreated -> handle(event)
             is RoomCreated -> this
+            else -> throw IllegalStateException()
         }
     }
 

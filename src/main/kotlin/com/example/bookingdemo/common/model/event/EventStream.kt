@@ -8,9 +8,9 @@ import java.util.*
 class EventStream(
     val aggregateId: String,
     @Id val id: String = UUID.randomUUID().toString(),
-    val events: MutableList<RoomEvent> = mutableListOf()
+    val events: MutableList<DomainEvent> = mutableListOf()
 ) {
-    fun addEvent(event: RoomEvent): EventStream {
+    fun addEvent(event: DomainEvent): EventStream {
         events.add(event)
         return this
     }

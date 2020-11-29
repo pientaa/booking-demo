@@ -7,6 +7,7 @@ import com.example.bookingdemo.common.model.event.BookingUpdated
 import com.example.bookingdemo.common.model.event.RoomCreated
 import com.example.bookingdemo.common.model.event.RoomEvent
 import java.time.*
+import java.util.*
 
 class CreateRoom(
     val number: String,
@@ -22,7 +23,7 @@ class CreateBooking(
     var start: Instant,
     var end: Instant
 ) {
-    fun toEvent(bookingId: String): BookingCreated =
+    fun toEvent(bookingId: String = UUID.randomUUID().toString()): BookingCreated =
         BookingCreated(bookingId, number, start, end)
 
     init {

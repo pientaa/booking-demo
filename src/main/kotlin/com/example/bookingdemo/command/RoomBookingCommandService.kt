@@ -1,6 +1,6 @@
 package com.example.bookingdemo.command
 
-import com.example.bookingdemo.command.api.dto.RoomDTO
+import com.example.bookingdemo.common.infastructure.EventPublisher
 import com.example.bookingdemo.common.infastructure.RoomConflictException
 import com.example.bookingdemo.common.model.Room
 import com.example.bookingdemo.common.model.UnInitializedRoom
@@ -10,23 +10,20 @@ import org.springframework.stereotype.Service
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.ZoneOffset
-import java.util.*
 
 @Service
 class RoomBookingCommandService(
-    private val store: EventStore
+    private val store: EventStore,
+    private val eventPublisher: EventPublisher
 ) {
-    fun createRoom(command: CreateRoom): RoomDTO {
+    fun createRoom(command: CreateRoom) {
         val room = getRoom(command.number)
 
         val event = command.toEvent(room.number)
 
-        return room.handle(event)
-            .also { store.saveEvent(event) } //This could be catch in some event service and saved there
-            .let { RoomDTO(it as Room) }
-            .also {
-                //TODO: Publish event
-            }
+        room.handle(event)
+            .also { store.saveEvent(event) }
+            .also { eventPublisher.publish(event) }
     }
 
     fun createBooking(command: CreateBooking) {
@@ -37,15 +34,11 @@ class RoomBookingCommandService(
         if (overlappingBookings.isNotEmpty())
             throw RoomConflictException(command.number, command.start, command.end)
 
-        val bookingId = UUID.randomUUID().toString()
-
-        val event = command.toEvent(bookingId)
+        val event = command.toEvent()
 
         room.handle(event)
-            .also { store.saveEvent(event) } //This could be catch in some event service and saved there
-            .also {
-                //TODO: Publish event
-            }
+            .also { store.saveEvent(event) }
+            .also { eventPublisher.publish(event) }
     }
 
     fun updateBooking(command: UpdateBooking) {
@@ -60,10 +53,8 @@ class RoomBookingCommandService(
         val event = command.toEvent()
 
         room.handle(event)
-            .also { store.saveEvent(event) } //This could be catch in some event service and saved there
-            .also {
-                //TODO: Publish event
-            }
+            .also { store.saveEvent(event) }
+            .also { eventPublisher.publish(event) }
     }
 
     fun cancelBooking(command: CancelBooking) {
@@ -74,9 +65,6 @@ class RoomBookingCommandService(
 
         //        publish: BookingCancelled
     }
-
-//    private fun findByNumberOrException(number: String) =
-//        store.findByNumber(number) ?: throw RoomNotFoundException(roomId = number)
 
     private fun Room.getUpcomingBookingsBetween(start: Instant, end: Instant): List<Booking> {
         val now = LocalDateTime.now().toInstant(ZoneOffset.UTC)
