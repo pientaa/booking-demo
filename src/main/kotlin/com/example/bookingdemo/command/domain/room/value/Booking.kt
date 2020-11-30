@@ -1,4 +1,4 @@
-package com.example.bookingdemo.common.model.value
+package com.example.bookingdemo.command.domain.room.value
 
 import java.time.Instant
 

@@ -1,5 +1,6 @@
-package com.example.bookingdemo.common.model.event
+package com.example.bookingdemo.command.domain.room
 
+import com.example.bookingdemo.common.model.DomainEvent
 import java.time.Instant
 
 sealed class RoomEvent(number: String) : DomainEvent(aggregateId = number, aggregateType = "Room")

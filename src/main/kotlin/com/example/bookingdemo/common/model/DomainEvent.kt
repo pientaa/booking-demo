@@ -1,4 +1,4 @@
-package com.example.bookingdemo.common.model.event
+package com.example.bookingdemo.common.model
 
 import java.time.Instant
 import java.time.LocalDateTime

@@ -1,11 +1,11 @@
-package com.example.bookingdemo.command
+package com.example.bookingdemo.command.domain
 
+import com.example.bookingdemo.command.domain.room.BookingCreated
+import com.example.bookingdemo.command.domain.room.BookingUpdated
+import com.example.bookingdemo.command.domain.room.RoomCreated
+import com.example.bookingdemo.command.domain.room.RoomEvent
 import com.example.bookingdemo.common.infastructure.BookingDateException
 import com.example.bookingdemo.common.infastructure.InvalidDateTimeParamsException
-import com.example.bookingdemo.common.model.event.BookingCreated
-import com.example.bookingdemo.common.model.event.BookingUpdated
-import com.example.bookingdemo.common.model.event.RoomCreated
-import com.example.bookingdemo.common.model.event.RoomEvent
 import java.time.*
 import java.util.*
 

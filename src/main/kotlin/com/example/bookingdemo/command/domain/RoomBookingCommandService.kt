@@ -1,11 +1,11 @@
-package com.example.bookingdemo.command
+package com.example.bookingdemo.command.domain
 
-import com.example.bookingdemo.common.infastructure.EventPublisher
+import com.example.bookingdemo.command.domain.room.Room
+import com.example.bookingdemo.command.domain.room.UnInitializedRoom
+import com.example.bookingdemo.command.domain.room.value.Booking
+import com.example.bookingdemo.command.infrastructure.EventPublisher
 import com.example.bookingdemo.common.infastructure.RoomConflictException
-import com.example.bookingdemo.common.model.Room
-import com.example.bookingdemo.common.model.UnInitializedRoom
-import com.example.bookingdemo.common.model.event.EventStore
-import com.example.bookingdemo.common.model.value.Booking
+import com.example.bookingdemo.common.model.EventStore
 import org.springframework.stereotype.Service
 import java.time.Instant
 import java.time.LocalDateTime

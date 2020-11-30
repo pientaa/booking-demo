@@ -1,7 +1,8 @@
-package com.example.bookingdemo.common.model
+package com.example.bookingdemo.command.domain.room
 
-import com.example.bookingdemo.common.model.event.*
-import com.example.bookingdemo.common.model.value.Booking
+import com.example.bookingdemo.command.domain.room.value.Booking
+import com.example.bookingdemo.common.model.AggregateRoot
+import com.example.bookingdemo.common.model.DomainEvent
 import org.springframework.data.annotation.Id
 import java.util.*
 

@@ -1,4 +1,4 @@
-package com.example.bookingdemo.common.model.event
+package com.example.bookingdemo.common.model
 
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
