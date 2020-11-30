@@ -27,7 +27,7 @@
   "policies": [],
   "queues": [
     {
-      "name": "events_queue",
+      "name": "event_queue",
       "vhost": "/",
       "durable": true,
       "auto_delete": false,
