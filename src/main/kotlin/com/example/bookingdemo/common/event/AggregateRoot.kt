@@ -1,4 +1,4 @@
-package com.example.bookingdemo.common.model
+package com.example.bookingdemo.common.event
 
 abstract class AggregateRoot<EventType>(var aggregateId: String) {
 

@@ -5,7 +5,7 @@ import com.example.bookingdemo.command.domain.room.UnInitializedRoom
 import com.example.bookingdemo.command.domain.room.value.Booking
 import com.example.bookingdemo.command.infrastructure.EventPublisher
 import com.example.bookingdemo.common.infastructure.RoomConflictException
-import com.example.bookingdemo.common.model.EventStore
+import com.example.bookingdemo.common.event.EventStore
 import org.springframework.stereotype.Service
 import java.time.Instant
 import java.time.LocalDateTime
