@@ -5,6 +5,13 @@ services:
     container_name: mongo-db
     ports:
       - 27017:27017
-#    command: >
-#      sh -c "mongod --replSet rs0 &&
-#             mongo --eval "rs.initiate()""
+
+  rabbitmq:
+    image: rabbitmq:3.8.9-management
+    volumes:
+      - ./data:/var/lib/rabbitmq:rw
+      - ./definitions.json:/etc/rabbitmq/definitions.json:ro
+      - ./rabbitmq.config:/etc/rabbitmq/rabbitmq.config:ro
+    ports:
+      - 5672:5672
+      - 15672:15672
