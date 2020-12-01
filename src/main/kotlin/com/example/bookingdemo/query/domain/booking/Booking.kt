@@ -1,6 +1,7 @@
 package com.example.bookingdemo.query.domain.booking
 
 import com.example.bookingdemo.command.domain.room.BookingCreated
+import com.example.bookingdemo.command.domain.room.BookingUpdated
 import com.fasterxml.jackson.annotation.JsonFormat
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
@@ -17,6 +18,13 @@ data class Booking(
     val end: Instant
 ) {
     constructor(event: BookingCreated) : this(
+        id = event.bookingId,
+        roomNumber = event.roomNumber,
+        start = event.start,
+        end = event.end
+    )
+
+    constructor(event: BookingUpdated) : this(
         id = event.bookingId,
         roomNumber = event.roomNumber,
         start = event.start,

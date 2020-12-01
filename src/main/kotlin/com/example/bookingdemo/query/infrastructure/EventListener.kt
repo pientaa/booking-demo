@@ -1,6 +1,8 @@
 package com.example.bookingdemo.query.infrastructure
 
+import com.example.bookingdemo.command.domain.room.BookingCancelled
 import com.example.bookingdemo.command.domain.room.BookingCreated
+import com.example.bookingdemo.command.domain.room.BookingUpdated
 import com.example.bookingdemo.command.domain.room.RoomCreated
 import com.example.bookingdemo.common.event.DomainEvent
 import com.example.bookingdemo.common.infastructure.RabbitEvent
@@ -38,9 +40,10 @@ class EventListener(
         val actualEvent = when (rabbitEvent.eventType) {
             "RoomCreated" -> mapper.readValue(rabbitEvent.eventLoad) as RoomCreated
             "BookingCreated" -> mapper.readValue(rabbitEvent.eventLoad) as BookingCreated
+            "BookingUpdated" -> mapper.readValue(rabbitEvent.eventLoad) as BookingUpdated
+            "BookingCancelled" -> mapper.readValue(rabbitEvent.eventLoad) as BookingCancelled
             else -> throw IllegalStateException()
         }
-
         handle(actualEvent)
     }
 
@@ -48,6 +51,8 @@ class EventListener(
         when (event) {
             is RoomCreated -> roomRepository.save(Room(event))
             is BookingCreated -> bookingRepository.save(Booking(event))
+            is BookingUpdated -> bookingRepository.save(Booking(event))
+            is BookingCancelled -> bookingRepository.deleteById(event.bookingId)
         }
     }
 }
