@@ -4,8 +4,8 @@ import com.example.bookingdemo.command.domain.room.Room
 import com.example.bookingdemo.command.domain.room.UnInitializedRoom
 import com.example.bookingdemo.command.domain.room.value.Booking
 import com.example.bookingdemo.command.infrastructure.EventPublisher
-import com.example.bookingdemo.common.infastructure.RoomConflictException
 import com.example.bookingdemo.common.event.EventStore
+import com.example.bookingdemo.common.infastructure.RoomConflictException
 import org.springframework.stereotype.Service
 import java.time.Instant
 import java.time.LocalDateTime
@@ -27,12 +27,12 @@ class RoomBookingCommandService(
     }
 
     fun createBooking(command: CreateBooking) {
-        val room = getRoom(command.number)
+        val room = getRoom(command.roomNumber)
 
         val overlappingBookings = room.getUpcomingBookingsBetween(command.start, command.end)
 
         if (overlappingBookings.isNotEmpty())
-            throw RoomConflictException(command.number, command.start, command.end)
+            throw RoomConflictException(command.roomNumber, command.start, command.end)
 
         val event = command.toEvent()
 
@@ -42,13 +42,13 @@ class RoomBookingCommandService(
     }
 
     fun updateBooking(command: UpdateBooking) {
-        val room = getRoom(command.number)
+        val room = getRoom(command.roomNumber)
 
         val overlappingBookings = room.getUpcomingBookingsBetween(command.start, command.end)
-            .filter { it.id != command.number }
+            .filter { it.id != command.roomNumber }
 
         if (overlappingBookings.isNotEmpty())
-            throw RoomConflictException(command.number, command.start, command.end)
+            throw RoomConflictException(command.roomNumber, command.start, command.end)
 
         val event = command.toEvent()
 
@@ -58,12 +58,13 @@ class RoomBookingCommandService(
     }
 
     fun cancelBooking(command: CancelBooking) {
-        val room = getRoom(command.number)
+        val room = getRoom(command.roomNumber)
 
-//        room.handle(BookingCancelled(command.bookingId))
-//        store.save(room)
+        val event = command.toEvent()
 
-        //        publish: BookingCancelled
+        room.handle(event)
+            .also { store.saveEvent(event) }
+            .also { eventPublisher.publish(event) }
     }
 
     private fun Room.getUpcomingBookingsBetween(start: Instant, end: Instant): List<Booking> {

@@ -1,9 +1,6 @@
 package com.example.bookingdemo.command.domain
 
-import com.example.bookingdemo.command.domain.room.BookingCreated
-import com.example.bookingdemo.command.domain.room.BookingUpdated
-import com.example.bookingdemo.command.domain.room.RoomCreated
-import com.example.bookingdemo.command.domain.room.RoomEvent
+import com.example.bookingdemo.command.domain.room.*
 import com.example.bookingdemo.common.infastructure.BookingDateException
 import com.example.bookingdemo.common.infastructure.InvalidDateTimeParamsException
 import java.time.*
@@ -19,12 +16,12 @@ class CreateRoom(
 }
 
 class CreateBooking(
-    val number: String,
+    val roomNumber: String,
     var start: Instant,
     var end: Instant
 ) {
     fun toEvent(bookingId: String = UUID.randomUUID().toString()): BookingCreated =
-        BookingCreated(bookingId, number, start, end)
+        BookingCreated(bookingId, roomNumber, start, end)
 
     init {
         validateDateTimeParams(start, end)
@@ -32,13 +29,13 @@ class CreateBooking(
 }
 
 class UpdateBooking(
-    val number: String,
+    val roomNumber: String,
     val bookingId: String,
     var start: Instant,
     var end: Instant
 ) {
     fun toEvent(): RoomEvent =
-        BookingUpdated(bookingId, number, start, end)
+        BookingUpdated(bookingId, roomNumber, start, end)
 
     init {
         validateDateTimeParams(start, end)
@@ -46,9 +43,15 @@ class UpdateBooking(
 }
 
 class CancelBooking(
-    val number: String,
+    val roomNumber: String,
     val bookingId: String
-)
+) {
+    fun toEvent(): BookingCancelled =
+        BookingCancelled(
+            bookingId = bookingId,
+            roomNumber = roomNumber
+        )
+}
 
 private fun validateDateTimeParams(start: Instant, end: Instant) {
     if (start.isAfter(end)) throw InvalidDateTimeParamsException()

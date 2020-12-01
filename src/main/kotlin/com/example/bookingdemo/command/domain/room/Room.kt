@@ -23,6 +23,7 @@ open class UnInitializedRoom(number: String) : Room(number) {
     override fun handle(event: DomainEvent): AggregateRoot<DomainEvent> {
         return when (event) {
             is RoomCreated -> CreatedRoom(event)
+            //TODO: Handle exceptions
             else -> throw IllegalStateException()
         }
     }
