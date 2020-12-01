@@ -1,7 +1,9 @@
 package com.example.bookingdemo.command.infrastructure
 
+import com.example.bookingdemo.command.domain.room.BookingCreated
 import com.example.bookingdemo.command.domain.room.RoomCreated
 import com.example.bookingdemo.common.event.DomainEvent
+import com.example.bookingdemo.common.infastructure.RabbitEvent
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
@@ -23,10 +25,12 @@ class EventPublisher(
 
     fun publish(event: DomainEvent) {
         when (event) {
-            is RoomCreated -> rabbitTemplate.convertAndSend(
-                "event_queue",
-                mapper.writeValueAsString(RabbitEvent("RoomCreated", mapper.writeValueAsString(event)))
-            )
+            is RoomCreated -> RabbitEvent("RoomCreated", mapper.writeValueAsString(event))
+            is BookingCreated -> RabbitEvent("BookingCreated", mapper.writeValueAsString(event))
+            else -> throw IllegalStateException()
         }
+            .let {
+                rabbitTemplate.convertAndSend("event_queue", mapper.writeValueAsString(it))
+            }
     }
 }

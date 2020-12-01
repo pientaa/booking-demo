@@ -1,4 +1,4 @@
-package com.example.bookingdemo.command.infrastructure
+package com.example.bookingdemo.common.infastructure
 
 import org.springframework.amqp.core.Queue
 import org.springframework.amqp.core.QueueBuilder
