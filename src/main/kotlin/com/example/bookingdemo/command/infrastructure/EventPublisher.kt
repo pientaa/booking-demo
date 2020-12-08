@@ -2,7 +2,7 @@ package com.example.bookingdemo.command.infrastructure
 
 import com.example.bookingdemo.command.domain.room.BookingCancelled
 import com.example.bookingdemo.command.domain.room.BookingCreated
-import com.example.bookingdemo.command.domain.room.BookingUpdated
+import com.example.bookingdemo.command.domain.room.BookingRescheduled
 import com.example.bookingdemo.command.domain.room.RoomCreated
 import com.example.bookingdemo.common.event.DomainEvent
 import com.example.bookingdemo.common.infastructure.RabbitEvent
@@ -29,7 +29,7 @@ class EventPublisher(
         when (event) {
             is RoomCreated -> RabbitEvent("RoomCreated", mapper.writeValueAsString(event))
             is BookingCreated -> RabbitEvent("BookingCreated", mapper.writeValueAsString(event))
-            is BookingUpdated -> RabbitEvent("BookingUpdated", mapper.writeValueAsString(event))
+            is BookingRescheduled -> RabbitEvent("BookingUpdated", mapper.writeValueAsString(event))
             is BookingCancelled -> RabbitEvent("BookingCancelled", mapper.writeValueAsString(event))
             else -> throw IllegalStateException()
         }

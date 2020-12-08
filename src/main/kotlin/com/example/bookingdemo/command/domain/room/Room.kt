@@ -75,7 +75,7 @@ class RoomPartlyBooked private constructor(number: String) : CreatedRoom(number)
     override fun handle(event: DomainEvent): Room {
         return when (event) {
             is BookingCancelled -> handle(event)
-            is BookingUpdated -> handle(event)
+            is BookingRescheduled -> handle(event)
             is BookingCreated -> handle(event)
             is RoomCreated -> this
             else -> throw IllegalStateException()
@@ -90,7 +90,7 @@ class RoomPartlyBooked private constructor(number: String) : CreatedRoom(number)
         }
     }
 
-    private fun handle(event: BookingUpdated): RoomPartlyBooked {
+    private fun handle(event: BookingRescheduled): RoomPartlyBooked {
         return this.apply {
             val booking =
                 Booking(id = event.bookingId, roomId = event.roomNumber, start = event.start, end = event.end)

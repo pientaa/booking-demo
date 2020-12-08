@@ -19,8 +19,8 @@ class CommandController(
 
     @PostMapping("/{roomNumber}/bookings")
     @ResponseStatus(HttpStatus.CREATED)
-    fun scheduleBooking(@PathVariable roomNumber: String, @RequestBody booking: BookingDTO) =
-        commandService.scheduleBooking(ScheduleBooking(roomNumber, booking.start, booking.end))
+    fun createBooking(@PathVariable roomNumber: String, @RequestBody booking: BookingDTO) =
+        commandService.createBooking(CreateBooking(roomNumber, booking.start, booking.end))
 
     @PutMapping("/{roomNumber}/bookings/{bookingId}")
     fun rescheduleBooking(

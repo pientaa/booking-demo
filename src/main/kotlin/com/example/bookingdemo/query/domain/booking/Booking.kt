@@ -1,7 +1,7 @@
 package com.example.bookingdemo.query.domain.booking
 
 import com.example.bookingdemo.command.domain.room.BookingCreated
-import com.example.bookingdemo.command.domain.room.BookingUpdated
+import com.example.bookingdemo.command.domain.room.BookingRescheduled
 import com.fasterxml.jackson.annotation.JsonFormat
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.Document
@@ -24,7 +24,7 @@ data class Booking(
         end = event.end
     )
 
-    constructor(event: BookingUpdated) : this(
+    constructor(event: BookingRescheduled) : this(
         id = event.bookingId,
         roomNumber = event.roomNumber,
         start = event.start,

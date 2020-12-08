@@ -15,7 +15,7 @@ class AddRoom(
         RoomCreated(number, hasWhiteboard, hasProjector)
 }
 
-class ScheduleBooking(
+class CreateBooking(
     val roomNumber: String,
     var start: Instant,
     var end: Instant
@@ -35,7 +35,7 @@ class RescheduleBooking(
     var end: Instant
 ) {
     fun toEvent(): RoomEvent =
-        BookingUpdated(bookingId, roomNumber, start, end)
+        BookingRescheduled(bookingId, roomNumber, start, end)
 
     init {
         validateDateTimeParams(start, end)

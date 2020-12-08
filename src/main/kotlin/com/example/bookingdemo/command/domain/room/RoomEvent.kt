@@ -18,7 +18,7 @@ data class BookingCreated(
     val end: Instant
 ) : RoomEvent(roomNumber)
 
-data class BookingUpdated(
+data class BookingRescheduled(
     val bookingId: String,
     val roomNumber: String,
     val start: Instant,
