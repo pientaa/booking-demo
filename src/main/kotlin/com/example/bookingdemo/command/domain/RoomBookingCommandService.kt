@@ -16,7 +16,7 @@ class RoomBookingCommandService(
     private val store: EventStore,
     private val eventPublisher: EventPublisher
 ) {
-    fun createRoom(command: CreateRoom) {
+    fun addRoom(command: AddRoom) {
         val room = getRoom(command.number)
 
         val event = command.toEvent(room.number)
@@ -26,7 +26,7 @@ class RoomBookingCommandService(
             .also { eventPublisher.publish(event) }
     }
 
-    fun createBooking(command: CreateBooking) {
+    fun scheduleBooking(command: ScheduleBooking) {
         val room = getRoom(command.roomNumber)
 
         val overlappingBookings = room.getUpcomingBookingsBetween(command.start, command.end)
@@ -41,7 +41,7 @@ class RoomBookingCommandService(
             .also { eventPublisher.publish(event) }
     }
 
-    fun updateBooking(command: UpdateBooking) {
+    fun rescheduleBooking(command: RescheduleBooking) {
         val room = getRoom(command.roomNumber)
 
         val overlappingBookings = room.getUpcomingBookingsBetween(command.start, command.end)

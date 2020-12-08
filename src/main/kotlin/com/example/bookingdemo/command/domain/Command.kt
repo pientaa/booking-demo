@@ -6,7 +6,7 @@ import com.example.bookingdemo.common.infastructure.InvalidDateTimeParamsExcepti
 import java.time.*
 import java.util.*
 
-class CreateRoom(
+class AddRoom(
     val number: String,
     val hasWhiteboard: Boolean,
     val hasProjector: Boolean
@@ -15,7 +15,7 @@ class CreateRoom(
         RoomCreated(number, hasWhiteboard, hasProjector)
 }
 
-class CreateBooking(
+class ScheduleBooking(
     val roomNumber: String,
     var start: Instant,
     var end: Instant
@@ -28,7 +28,7 @@ class CreateBooking(
     }
 }
 
-class UpdateBooking(
+class RescheduleBooking(
     val roomNumber: String,
     val bookingId: String,
     var start: Instant,

@@ -14,20 +14,20 @@ class CommandController(
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun createRoom(@RequestBody roomDTO: RoomDTO) =
-        commandService.createRoom(CreateRoom(roomDTO.number, roomDTO.hasWhiteboard, roomDTO.hasWhiteboard))
+    fun addRoom(@RequestBody roomDTO: RoomDTO) =
+        commandService.addRoom(AddRoom(roomDTO.number, roomDTO.hasWhiteboard, roomDTO.hasWhiteboard))
 
     @PostMapping("/{roomNumber}/bookings")
     @ResponseStatus(HttpStatus.CREATED)
-    fun createBooking(@PathVariable roomNumber: String, @RequestBody booking: BookingDTO) =
-        commandService.createBooking(CreateBooking(roomNumber, booking.start, booking.end))
+    fun scheduleBooking(@PathVariable roomNumber: String, @RequestBody booking: BookingDTO) =
+        commandService.scheduleBooking(ScheduleBooking(roomNumber, booking.start, booking.end))
 
     @PutMapping("/{roomNumber}/bookings/{bookingId}")
-    fun updateBooking(
+    fun rescheduleBooking(
         @PathVariable roomNumber: String,
         @PathVariable bookingId: String,
         @RequestBody booking: BookingDTO
-    ) = commandService.updateBooking(UpdateBooking(roomNumber, bookingId, booking.start, booking.end))
+    ) = commandService.rescheduleBooking(RescheduleBooking(roomNumber, bookingId, booking.start, booking.end))
 
     @DeleteMapping("/{roomNumber}/bookings/{bookingId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
