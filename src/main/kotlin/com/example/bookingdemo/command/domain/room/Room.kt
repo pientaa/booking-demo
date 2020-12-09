@@ -3,15 +3,9 @@ package com.example.bookingdemo.command.domain.room
 import com.example.bookingdemo.command.domain.room.value.Booking
 import com.example.bookingdemo.common.event.AggregateRoot
 import com.example.bookingdemo.common.event.DomainEvent
-import org.springframework.data.annotation.Id
-import java.util.*
 
-sealed class Room(val number: String) :
-    AggregateRoot<DomainEvent>(aggregateId = number) {
-    @Id
-    var roomId: String = UUID.randomUUID().toString()
+sealed class Room(val number: String) : AggregateRoot<DomainEvent>(aggregateId = number) {
     var bookings = mutableMapOf<String, Booking>()
-
     var hasWhiteboard: Boolean = false
     var hasProjector: Boolean = false
 
@@ -19,25 +13,21 @@ sealed class Room(val number: String) :
 }
 
 open class UnInitializedRoom(number: String) : Room(number) {
-
     override fun handle(event: DomainEvent): AggregateRoot<DomainEvent> {
         return when (event) {
             is RoomCreated -> CreatedRoom(event)
-            //TODO: Handle exceptions
             else -> throw IllegalStateException()
         }
     }
 }
 
 open class CreatedRoom constructor(number: String) : UnInitializedRoom(number) {
-
     companion object {
         operator fun invoke(roomCreated: RoomCreated): CreatedRoom =
             CreatedRoom(roomCreated.number).apply {
                 hasProjector = roomCreated.hasProjector
                 hasWhiteboard = roomCreated.hasWhiteboard
             }
-
         operator fun invoke(number: String, hasWhiteboard: Boolean, hasProjector: Boolean): CreatedRoom =
             CreatedRoom(number).apply {
                 this.hasProjector = hasProjector
