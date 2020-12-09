@@ -12,7 +12,7 @@ import java.time.LocalDateTime
 import java.time.ZoneOffset
 
 @Service
-class RoomBookingCommandService(
+class CommandService(
     private val store: EventStore,
     private val eventPublisher: EventPublisher
 ) {

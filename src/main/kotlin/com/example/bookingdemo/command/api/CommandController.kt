@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*
 @RestController
 @RequestMapping("/rooms")
 class CommandController(
-    private val commandService: RoomBookingCommandService
+    private val commandService: CommandService
 ) {
 
     @PostMapping
