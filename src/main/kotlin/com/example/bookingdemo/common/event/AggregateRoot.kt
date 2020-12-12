@@ -11,8 +11,8 @@ abstract class AggregateRoot<EventType>(var aggregateId: String) {
         return event
     }
 
-    fun getAggregate() = domainEvents().fold(this) { acc, eventType ->
-        acc.handle(eventType, false)
+    fun getAggregate() = domainEvents().fold(this) { aggregate, event ->
+        aggregate.handle(event, isNew = false)
     }
 
     fun handle(event: EventType, isNew: Boolean = true) = handle(event)

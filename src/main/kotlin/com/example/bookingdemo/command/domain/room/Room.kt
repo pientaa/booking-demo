@@ -21,7 +21,7 @@ open class UnInitializedRoom(number: String) : Room(number) {
     }
 }
 
-open class CreatedRoom constructor(number: String) : UnInitializedRoom(number) {
+open class CreatedRoom(number: String) : UnInitializedRoom(number) {
     companion object {
         operator fun invoke(roomCreated: RoomCreated): CreatedRoom =
             CreatedRoom(roomCreated.number).apply {
@@ -37,18 +37,18 @@ open class CreatedRoom constructor(number: String) : UnInitializedRoom(number) {
 
     override fun handle(event: DomainEvent): Room {
         return when (event) {
-            is BookingCreated -> RoomPartlyBooked(this, event)
+            is BookingCreated -> PartlyBookedRoom(this, event)
             is RoomCreated -> this
             else -> throw IllegalAccessException()
         }
     }
 }
 
-class RoomPartlyBooked private constructor(number: String) : CreatedRoom(number) {
+class PartlyBookedRoom private constructor(number: String) : CreatedRoom(number) {
 
     companion object {
-        operator fun invoke(room: CreatedRoom, event: BookingCreated): RoomPartlyBooked {
-            return RoomPartlyBooked(room.number)
+        operator fun invoke(room: CreatedRoom, event: BookingCreated): PartlyBookedRoom {
+            return PartlyBookedRoom(room.number)
                 .apply {
                     val booking =
                         Booking(
@@ -72,7 +72,7 @@ class RoomPartlyBooked private constructor(number: String) : CreatedRoom(number)
         }
     }
 
-    private fun handle(event: BookingCreated): RoomPartlyBooked {
+    private fun handle(event: BookingCreated): PartlyBookedRoom {
         return this.apply {
             val booking =
                 Booking(id = event.bookingId, roomId = event.roomNumber, start = event.start, end = event.end)
@@ -80,7 +80,7 @@ class RoomPartlyBooked private constructor(number: String) : CreatedRoom(number)
         }
     }
 
-    private fun handle(event: BookingRescheduled): RoomPartlyBooked {
+    private fun handle(event: BookingRescheduled): PartlyBookedRoom {
         return this.apply {
             val booking =
                 Booking(id = event.bookingId, roomId = event.roomNumber, start = event.start, end = event.end)
@@ -88,7 +88,7 @@ class RoomPartlyBooked private constructor(number: String) : CreatedRoom(number)
         }
     }
 
-    private fun handle(event: BookingCancelled): RoomPartlyBooked {
+    private fun handle(event: BookingCancelled): PartlyBookedRoom {
         return this.apply {
             bookings.remove(event.bookingId)
         }

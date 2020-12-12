@@ -49,7 +49,7 @@ class EventListener(
 
     private fun handle(event: DomainEvent) {
         when (event) {
-            is RoomCreated -> roomRepository.save(Room(event))
+            is RoomCreated -> if (roomRepository.findByNumber(event.number) == null) roomRepository.save(Room(event))
             is BookingCreated -> bookingRepository.save(Booking(event))
             is BookingRescheduled -> bookingRepository.save(Booking(event))
             is BookingCancelled -> bookingRepository.deleteById(event.bookingId)
